@@ -268,7 +268,7 @@ footer p { color: rgba(255,255,255,.45); font-size: .72rem; text-align: center; 
     </div>
   </div>
 
-  <button class="btn-print" onclick="window.print()">🖨️ Guardar / Imprimir comparativa en PDF</button>
+  <button class="btn-print" onclick="clAbrir()">📧 Recibir mi resultado por email</button>
 
 </div>
 </div>
@@ -451,6 +451,83 @@ function calcular() {
   document.getElementById('resultados').style.display = 'block';
   document.getElementById('resultados').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+</script>
+
+<!-- ── CivilIA Labs: Email Lead Capture ─────────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<div id="cl-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;padding:32px 28px;max-width:420px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.25);font-family:'Inter',sans-serif">
+    <h3 style="margin:0 0 4px;font-family:'Sora',sans-serif;font-size:1.05rem;color:#1E3A5F">Recibe tu resultado por email</h3>
+    <p style="margin:0 0 20px;font-size:.82rem;color:#64748B">Te enviamos el PDF en segundos, completamente gratis.</p>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <input id="cl-nombre" type="text" placeholder="Tu nombre" style="padding:10px 12px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:.88rem;outline:none;font-family:'Inter',sans-serif;color:#0F172A" onfocus="this.style.borderColor='#14B8A6'" onblur="this.style.borderColor='#E2E8F0'">
+      <select id="cl-ciudad" style="padding:10px 12px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;color:#0F172A;background:#fff">
+        <option value="">Ciudad en Perú...</option>
+        <option>Lima</option><option>Arequipa</option><option>Trujillo</option><option>Chiclayo</option>
+        <option>Piura</option><option>Iquitos</option><option>Cusco</option><option>Huancayo</option>
+        <option>Tacna</option><option>Chimbote</option><option>Juliaca</option><option>Ica</option>
+        <option>Sullana</option><option>Cajamarca</option><option>Pucallpa</option><option>Ayacucho</option>
+        <option>Huánuco</option><option>Tarapoto</option><option>Tumbes</option><option>Puno</option>
+        <option>Moquegua</option><option>Abancay</option><option>Huaraz</option><option>Cerro de Pasco</option>
+        <option>Moyobamba</option><option>Puerto Maldonado</option><option>Otra ciudad</option>
+      </select>
+      <input id="cl-email" type="email" placeholder="Tu correo electrónico" style="padding:10px 12px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:.88rem;outline:none;font-family:'Inter',sans-serif;color:#0F172A" onfocus="this.style.borderColor='#14B8A6'" onblur="this.style.borderColor='#E2E8F0'">
+      <label style="display:flex;align-items:flex-start;gap:9px;font-size:.78rem;color:#64748B;cursor:pointer;line-height:1.5">
+        <input id="cl-permiso" type="checkbox" style="margin-top:3px;flex-shrink:0;accent-color:#14B8A6">
+        <span>Acepto recibir información útil sobre construcción, bonos y financiamiento de vivienda de CivilIA Labs.</span>
+      </label>
+      <p id="cl-msg" style="margin:0;font-size:.82rem;display:none"></p>
+      <div style="display:flex;gap:10px;margin-top:2px">
+        <button onclick="clCerrar()" style="flex:1;padding:10px;background:#F1F5F9;border:none;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:'Inter',sans-serif;font-weight:500">Cancelar</button>
+        <button id="cl-btn" onclick="clEnviar()" style="flex:1;padding:10px;background:#14B8A6;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:700;font-family:'Inter',sans-serif">Enviarme el PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const CL_URL='TU_APPS_SCRIPT_URL_AQUI',CL_H='HipotecaCheck',CL_S='#resultados';
+  window.clAbrir=function(){document.getElementById('cl-overlay').style.display='flex';};
+  window.clCerrar=function(){
+    document.getElementById('cl-overlay').style.display='none';
+    document.getElementById('cl-msg').style.display='none';
+    const b=document.getElementById('cl-btn');b.textContent='Enviarme el PDF';b.disabled=false;
+  };
+  window.clEnviar=async function(){
+    const nombre=document.getElementById('cl-nombre').value.trim();
+    const ciudad=document.getElementById('cl-ciudad').value;
+    const email=document.getElementById('cl-email').value.trim();
+    const permiso=document.getElementById('cl-permiso').checked;
+    if(!nombre||!ciudad||!email)return clMsg('Completa todos los campos.','#DC2626');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return clMsg('Email no válido.','#DC2626');
+    const btn=document.getElementById('cl-btn');
+    btn.textContent='Generando PDF…';btn.disabled=true;
+    try{
+      const zona=document.querySelector(CL_S);
+      if(!zona)throw new Error('Calcula tu resultado primero.');
+      const ph=zona.style.height,po=zona.style.overflow,pm=zona.style.maxHeight;
+      zona.style.height='auto';zona.style.overflow='visible';zona.style.maxHeight='none';
+      const canvas=await html2canvas(zona,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
+      zona.style.height=ph;zona.style.overflow=po;zona.style.maxHeight=pm;
+      const iw=canvas.width/2,ih=canvas.height/2;
+      const {jsPDF}=window.jspdf;
+      const pdf=new jsPDF({unit:'px',format:[iw,ih],compress:true});
+      pdf.addImage(canvas.toDataURL('image/jpeg',.88),'JPEG',0,0,iw,ih);
+      const b64=pdf.output('datauristring').split(',')[1];
+      btn.textContent='Enviando…';
+      const res=await fetch(CL_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({nombre,ciudad,email,permiso,herramienta:CL_H,pdfBase64:b64})});
+      const d=await res.json();
+      if(d.ok){clMsg('✓ ¡Enviado! Revisa tu bandeja de entrada.','#15803D');btn.textContent='¡Enviado!';setTimeout(clCerrar,3500);}
+      else throw new Error(d.error);
+    }catch(err){
+      clMsg(err.message||'Error al enviar. Inténtalo de nuevo.','#DC2626');
+      btn.textContent='Enviarme el PDF';btn.disabled=false;
+    }
+  };
+  function clMsg(t,c){const el=document.getElementById('cl-msg');el.textContent=t;el.style.color=c;el.style.display='block';}
+})();
 </script>
 </body>
 </html>
