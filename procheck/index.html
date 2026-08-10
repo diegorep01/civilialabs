@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ProCheck — Directorio de constructores y vendedores | CivilIA Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#1E3A5F;--navy2:#243d65;--teal:#14B8A6;--teal2:#0D9488;
+  --bg:#F8FAFC;--card:#fff;--borde:#E2E8F0;--texto:#0F172A;--muted:#64748B;
+  --gold:#D97706;--gold-bg:#FFFBEB;--gold-borde:#FDE68A;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);}
+
+/* HEADER */
+header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.logo-wrap{display:flex;flex-direction:column;}
+.logo-brand{font-family:'Sora',sans-serif;font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:2px;opacity:.7;}
+.logo-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#fff;}
+.logo-title span{color:var(--teal);}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
+.btn-publicar{
+  padding:9px 20px;background:var(--teal);color:#fff;border:none;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;
+  text-decoration:none;white-space:nowrap;transition:background .15s;
+}
+.btn-publicar:hover{background:var(--teal2);}
+
+/* HERO COMPACTO */
+.hero{
+  background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);
+  padding:32px 32px 40px;text-align:center;color:#fff;
+}
+.hero h1{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:800;margin-bottom:8px;}
+.hero h1 span{color:var(--teal);}
+.hero p{font-size:14px;color:rgba(255,255,255,.7);max-width:520px;margin:0 auto;}
+
+/* FILTROS */
+.filtros-bar{
+  background:#fff;border-bottom:1px solid var(--borde);
+  padding:16px 32px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  position:sticky;top:0;z-index:100;
+}
+.filtro-sel{
+  padding:9px 14px;border:1.5px solid var(--borde);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;color:var(--texto);
+  background:#fff;cursor:pointer;outline:none;min-width:160px;
+}
+.filtro-sel:focus{border-color:var(--teal);}
+.filtro-buscar{
+  flex:1;min-width:200px;padding:9px 14px;
+  border:1.5px solid var(--borde);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;outline:none;
+}
+.filtro-buscar:focus{border-color:var(--teal);}
+.cnt-empresas{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;}
+.cnt-empresas b{color:var(--navy);}
+
+/* GRID */
+.empresas-wrap{max-width:1100px;margin:0 auto;padding:28px 24px 60px;}
+.empresas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
+
+/* CARD EMPRESA */
+.emp-card{
+  background:var(--card);border:1.5px solid var(--borde);border-radius:14px;
+  overflow:hidden;transition:all .18s;cursor:pointer;position:relative;
+}
+.emp-card:hover{border-color:var(--teal);box-shadow:0 6px 24px rgba(20,184,166,.14);transform:translateY(-2px);}
+.emp-card.destacada{border-color:var(--gold);}
+.badge-dest{
+  position:absolute;top:12px;left:12px;
+  background:var(--gold);color:#fff;
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  padding:3px 9px;border-radius:10px;z-index:1;
+}
+
+/* Logo placeholder */
+.emp-logo-area{
+  height:90px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);
+  position:relative;
+}
+.emp-logo-area.lotes{background:linear-gradient(135deg,#065f46 0%,#047857 100%);}
+.emp-logo-area.ambos{background:linear-gradient(135deg,var(--navy) 0%,#0D9488 100%);}
+.emp-logo-text{
+  font-family:'Sora',sans-serif;font-size:22px;font-weight:800;
+  color:rgba(255,255,255,.95);letter-spacing:1px;
+}
+.emp-logo-inicial{
+  width:52px;height:52px;border-radius:12px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#fff;
+  margin-right:12px;
+}
+
+/* Cuerpo */
+.emp-body{padding:16px 18px;}
+.emp-nombre{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--texto);margin-bottom:4px;}
+.emp-tipo-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.tipo-chip{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;}
+.tc-constr{background:#dbeafe;color:#1d4ed8;}
+.tc-lotes{background:#d1fae5;color:#065f46;}
+.emp-zona{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.emp-zona::before{content:'📍 ';}
+.emp-servicios{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px;border-top:1px solid var(--borde);padding-top:10px;}
+.emp-servicios li{list-style:none;padding-left:12px;position:relative;}
+.emp-servicios li::before{content:'·';position:absolute;left:0;color:var(--teal);font-weight:700;}
+.emp-ref{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.emp-ref b{color:var(--texto);}
+
+/* Footer card */
+.emp-footer{
+  display:flex;gap:8px;padding:0 18px 16px;
+}
+.btn-contactar{
+  flex:1;padding:9px;background:var(--navy);color:#fff;
+  border:none;border-radius:9px;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;
+}
+.btn-contactar:hover{background:var(--teal2);}
+.btn-wa{
+  padding:9px 13px;border:1.5px solid #25D366;border-radius:9px;
+  background:none;cursor:pointer;font-size:14px;transition:all .15s;
+}
+.btn-wa:hover{background:#25D366;color:#fff;}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-ico{font-size:40px;margin-bottom:14px;}
+.empty-ttl{font-size:17px;font-weight:600;color:var(--texto);margin-bottom:6px;}
+
+/* CTA PUBLICAR */
+.cta-pub{
+  background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);
+  text-align:center;padding:48px 24px;color:#fff;margin-top:20px;
+}
+.cta-pub h2{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:10px;}
+.cta-pub p{font-size:14px;color:rgba(255,255,255,.7);max-width:480px;margin:0 auto 24px;}
+.cta-pub-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-cta-prim{
+  padding:12px 28px;background:var(--teal);color:#fff;
+  border:none;border-radius:10px;font-family:'Sora',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;text-decoration:none;
+}
+.btn-cta-prim:hover{background:var(--teal2);}
+.btn-cta-sec{
+  padding:12px 28px;background:transparent;color:#fff;
+  border:2px solid rgba(255,255,255,.4);border-radius:10px;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:all .15s;text-decoration:none;
+}
+.btn-cta-sec:hover{border-color:var(--teal);color:var(--teal);}
+
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:9999;align-items:center;justify-content:center;}
+.modal-ov.v{display:flex;}
+.modal-box{background:#fff;border-radius:16px;padding:28px;width:90%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-emp{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
+.modal-tel{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--teal2);text-align:center;padding:14px;background:var(--bg);border-radius:10px;margin-bottom:10px;}
+.modal-det{font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px;line-height:1.5;}
+.modal-close{width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
+.modal-close:hover{background:var(--teal2);}
+
+@media(max-width:640px){
+  .filtros-bar{padding:12px 16px;}
+  .empresas-wrap{padding:20px 16px 48px;}
+  .empresas-grid{grid-template-columns:1fr;}
+  header{padding:12px 16px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-brand">CivilIA Labs</div>
+    <div class="logo-title">Pro<span>Check</span></div>
+    <div class="logo-sub">Directorio de constructoras e inmobiliarias en Tarapoto / San Martín</div>
+  </div>
+  <a href="mailto:diegocisnerosherrera@gmail.com?subject=Quiero publicar mi empresa en ProCheck" class="btn-publicar">+ Publicar mi empresa</a>
+</header>
+
+<div class="hero">
+  <h1>Encuentra tu <span>constructor</span> o vendedor de lotes</h1>
+  <p>Empresas verificadas de construcción e inmobiliarias en la región San Martín, listas para atenderte.</p>
+</div>
+
+<div class="filtros-bar">
+  <select class="filtro-sel" id="sel-tipo" onchange="filtrar()">
+    <option value="">Todos los servicios</option>
+    <option value="construccion">Construcción</option>
+    <option value="lotes">Venta de lotes</option>
+    <option value="ambos">Construcción + Lotes</option>
+  </select>
+  <select class="filtro-sel" id="sel-zona" onchange="filtrar()">
+    <option value="">Todas las zonas</option>
+    <option value="Tarapoto">Tarapoto</option>
+    <option value="Morales">Morales</option>
+    <option value="Banda de Shilcayo">Banda de Shilcayo</option>
+    <option value="San Martín">San Martín (región)</option>
+    <option value="Lamas">Lamas</option>
+  </select>
+  <input class="filtro-buscar" type="text" id="inp-buscar" placeholder="Buscar empresa..." oninput="filtrar()"/>
+  <div class="cnt-empresas">Mostrando <b id="cnt">3</b> empresas</div>
+</div>
+
+<div class="empresas-wrap">
+  <div class="empresas-grid" id="grid"></div>
+</div>
+
+<div class="cta-pub">
+  <h2>¿Tu empresa no está aquí?</h2>
+  <p>Publica tu perfil y llega a clientes que ya están buscando construir o comprar su lote en Tarapoto.</p>
+  <div class="cta-pub-btns">
+    <a href="mailto:diegocisnerosherrera@gmail.com?subject=Quiero publicar mi empresa en ProCheck" class="btn-cta-prim">Publicar mi empresa →</a>
+    <a href="../" class="btn-cta-sec">Ver otras herramientas</a>
+  </div>
+</div>
+
+<!-- MODAL CONTACTO -->
+<div class="modal-ov" id="modal-ov">
+  <div class="modal-box">
+    <div class="modal-emp" id="m-nombre"></div>
+    <div class="modal-sub" id="m-tipo"></div>
+    <div class="modal-tel" id="m-tel"></div>
+    <div class="modal-det" id="m-det"></div>
+    <button class="modal-close" onclick="cerrarModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+const EMPRESAS = [
+  {
+    id: 1,
+    nombre: 'Cisneros Ingenieros',
+    tipos: ['construccion','ambos'],
+    tipoLabel: ['Construcción','Lotes'],
+    logoClase: 'ambos',
+    inicial: 'CI',
+    zona: 'Tarapoto',
+    servicios: ['Construcción residencial y comercial','Diseño arquitectónico y planos','Supervisión de obra','Venta y asesoría de lotes'],
+    ref: 'Desde S/ 380/m²',
+    tel: '944 000 001',
+    det: 'Empresa familiar con más de 10 años en la región San Martín. Atención personalizada.',
+    wa: '51944000001',
+    destacada: true,
+  },
+  {
+    id: 2,
+    nombre: 'Inmobiliaria Los Chasquis',
+    tipos: ['lotes'],
+    tipoLabel: ['Lotes'],
+    logoClase: 'lotes',
+    inicial: 'LC',
+    zona: 'Morales',
+    servicios: ['Venta de lotes en lotizaciones verificadas','Asesoría inmobiliaria y financiamiento','Gestión de títulos y partidas registrales','Visitas guiadas a proyectos'],
+    ref: 'Lotes desde S/ 10,000',
+    tel: '944 000 002',
+    det: 'Especialistas en lotes urbanos y periurbanos en Tarapoto, Morales y Banda de Shilcayo.',
+    wa: '51944000002',
+    destacada: false,
+  },
+  {
+    id: 3,
+    nombre: 'Constructora Amazónica',
+    tipos: ['construccion'],
+    tipoLabel: ['Construcción'],
+    logoClase: '',
+    inicial: 'CA',
+    zona: 'Banda de Shilcayo',
+    servicios: ['Construcción residencial y multifamiliar','Remodelación y acabados','Estructuras metálicas','Consultoría de proyectos'],
+    ref: 'Desde S/ 350/m²',
+    tel: '944 000 003',
+    det: 'Construcción con materiales de calidad y plazos cumplidos. Operamos en toda la región San Martín.',
+    wa: '51944000003',
+    destacada: false,
+  },
+];
+
+let visible = [...EMPRESAS];
+
+function tipoClass(t){
+  if(t==='Construcción') return 'tc-constr';
+  if(t==='Lotes') return 'tc-lotes';
+  return 'tc-constr';
+}
+
+function renderCard(e){
+  return `
+<div class="emp-card${e.destacada?' destacada':''}" onclick="abrirModal(${e.id})">
+  ${e.destacada?'<div class="badge-dest">⭐ Destacada</div>':''}
+  <div class="emp-logo-area ${e.logoClase}">
+    <div class="emp-logo-inicial">${e.inicial}</div>
+    <div class="emp-logo-text">${e.nombre}</div>
+  </div>
+  <div class="emp-body">
+    <div class="emp-nombre">${e.nombre}</div>
+    <div class="emp-tipo-chips">
+      ${e.tipoLabel.map(t=>`<span class="tipo-chip ${tipoClass(t)}">${t}</span>`).join('')}
+    </div>
+    <div class="emp-zona">${e.zona}</div>
+    <ul class="emp-servicios">
+      ${e.servicios.map(s=>`<li>${s}</li>`).join('')}
+    </ul>
+    ${e.ref?`<div class="emp-ref"><b>${e.ref}</b></div>`:''}
+  </div>
+  <div class="emp-footer">
+    <button class="btn-contactar" onclick="event.stopPropagation();abrirModal(${e.id})">📞 Ver contacto</button>
+    <button class="btn-wa" onclick="event.stopPropagation();window.open('https://wa.me/${e.wa}','_blank')" title="WhatsApp">💬</button>
+  </div>
+</div>`;
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  if(!visible.length){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-ico">🔍</div><div class="empty-ttl">Sin resultados</div><p style="font-size:14px">Ajusta los filtros.</p></div>';
+  } else {
+    grid.innerHTML = visible.map(renderCard).join('');
+  }
+  document.getElementById('cnt').textContent = visible.length;
+}
+
+function filtrar(){
+  const tipo = document.getElementById('sel-tipo').value;
+  const zona = document.getElementById('sel-zona').value;
+  const buscar = document.getElementById('inp-buscar').value.toLowerCase().trim();
+  visible = EMPRESAS.filter(e=>{
+    if(tipo && !e.tipos.includes(tipo)) return false;
+    if(zona && e.zona !== zona) return false;
+    if(buscar && !e.nombre.toLowerCase().includes(buscar) && !e.servicios.join(' ').toLowerCase().includes(buscar)) return false;
+    return true;
+  });
+  // Destacadas siempre primero
+  visible.sort((a,b)=> b.destacada - a.destacada);
+  render();
+}
+
+function abrirModal(id){
+  const e = EMPRESAS.find(x=>x.id===id);
+  document.getElementById('m-nombre').textContent = e.nombre;
+  document.getElementById('m-tipo').textContent = e.tipoLabel.join(' · ') + ' · ' + e.zona;
+  document.getElementById('m-tel').textContent = '📞 ' + e.tel;
+  document.getElementById('m-det').textContent = e.det;
+  document.getElementById('modal-ov').classList.add('v');
+}
+function cerrarModal(){document.getElementById('modal-ov').classList.remove('v');}
+document.getElementById('modal-ov').addEventListener('click',e=>{if(e.target.id==='modal-ov')cerrarModal();});
+
+// Init
+visible.sort((a,b)=>b.destacada - a.destacada);
+render();
+</script>
+</body>
+</html>
