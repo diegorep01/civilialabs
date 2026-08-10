@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-W789C5WW');</script>
-<!-- End Google Tag Manager -->
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LoteCheck — Encuentra y valora lotes en Tarapoto | CivilIA Labs</title>
@@ -149,6 +142,16 @@ table.comp tr:last-child td{border-bottom:none;}
 .modal-close{width:100%;padding:11px;background:var(--navy);color:#fff;border:none;
   border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
 .modal-close:hover{background:var(--teal2);}
+.modal-form{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.modal-input{padding:10px 12px;border:1.5px solid var(--borde);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .15s;width:100%;}
+.modal-input:focus{border-color:var(--teal);}
+.modal-submit{width:100%;padding:11px;background:var(--teal2);color:#fff;border:none;
+  border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .15s;margin-bottom:6px;}
+.modal-submit:hover{background:var(--navy);}
+.modal-submit:disabled{background:var(--muted);cursor:default;}
+.modal-aviso{font-size:10px;color:var(--muted);text-align:center;}
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--borde);border-radius:4px;}
 @media(max-width:768px){
@@ -162,10 +165,6 @@ table.comp tr:last-child td{border-bottom:none;}
 </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W789C5WW"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <header>
   <div>
@@ -341,11 +340,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div class="modal-ov" id="modal-ov">
   <div class="modal-box">
-    <div class="modal-title">📞 Contacto del vendedor</div>
-    <div class="modal-sub" id="modal-sub"></div>
-    <div class="modal-tel" id="modal-tel"></div>
-    <div class="modal-cont" id="modal-cont"></div>
-    <button class="modal-close" onclick="cerrarModal()">Cerrar</button>
+    <!-- Estado 1: formulario -->
+    <div id="modal-form-st">
+      <div class="modal-title">📞 Ver contacto del vendedor</div>
+      <div class="modal-sub" id="modal-sub"></div>
+      <div class="modal-form">
+        <input class="modal-input" type="text" id="ml-nombre" placeholder="Tu nombre completo" maxlength="80"/>
+        <input class="modal-input" type="email" id="ml-email" placeholder="Tu correo electronico"/>
+        <select class="modal-input" id="ml-ciudad">
+          <option value="">Tu ciudad...</option>
+          <option>Tarapoto</option><option>Morales</option><option>Banda de Shilcayo</option>
+          <option>Lamas</option><option>Moyobamba</option><option>Juanjui</option>
+          <option>Lima</option><option>Otra</option>
+        </select>
+      </div>
+      <button class="modal-submit" id="ml-btn" onclick="enviarLead()">Ver numero de contacto →</button>
+      <div class="modal-aviso">Solo para mostrarte el contacto. Sin spam.</div>
+    </div>
+    <!-- Estado 2: telefono revelado -->
+    <div id="modal-tel-st" style="display:none;">
+      <div class="modal-title">📞 Contacto del vendedor</div>
+      <div class="modal-sub" id="modal-sub2"></div>
+      <div class="modal-tel" id="modal-tel"></div>
+      <div class="modal-cont" id="modal-cont"></div>
+      <button class="modal-close" onclick="cerrarModal()">Cerrar</button>
+    </div>
   </div>
 </div>
 
@@ -507,12 +526,40 @@ function verEnMapa(lat,lon,id){
   mapa.setView([lat,lon],16);
   if(markersMap[id]) cluster.zoomToShowLayer(markersMap[id],()=>markersMap[id].openPopup());
 }
+const APPS_URL='https://script.google.com/macros/s/AKfycbzlP3TKqjhoienKbwKoU5um4bowim5fF0Wy0LSRELFztIoEEflhwppEMhzg46SvlDU0bg/exec';
+let _loteActivo=null;
 function mostrarContacto(id){
-  const l=LOTES.find(x=>x.id===id); if(!l) return;
-  document.getElementById('modal-sub').textContent=l.lotiz+(l.lot?' · '+l.lot:'');
-  document.getElementById('modal-tel').textContent=l.tel||'Sin teléfono registrado';
-  document.getElementById('modal-cont').textContent=l.cont?'👤 '+l.cont:'';
+  _loteActivo=LOTES.find(x=>x.id===id); if(!_loteActivo) return;
+  const sub=_loteActivo.lotiz+(_loteActivo.lot?' · '+_loteActivo.lot:'');
+  document.getElementById('modal-sub').textContent=sub;
+  document.getElementById('modal-sub2').textContent=sub;
+  document.getElementById('modal-form-st').style.display='block';
+  document.getElementById('modal-tel-st').style.display='none';
+  document.getElementById('ml-nombre').value='';
+  document.getElementById('ml-email').value='';
+  document.getElementById('ml-ciudad').value='';
+  const btn=document.getElementById('ml-btn');
+  btn.disabled=false; btn.textContent='Ver numero de contacto →';
   document.getElementById('modal-ov').classList.add('v');
+}
+function enviarLead(){
+  const nombre=document.getElementById('ml-nombre').value.trim();
+  const email=document.getElementById('ml-email').value.trim();
+  const ciudad=document.getElementById('ml-ciudad').value;
+  if(!nombre||!email||!ciudad){alert('Completa tu nombre, email y ciudad.');return;}
+  const btn=document.getElementById('ml-btn');
+  btn.disabled=true; btn.textContent='Enviando...';
+  const l=_loteActivo;
+  const fd=new FormData();
+  fd.append('nombre',nombre); fd.append('email',email); fd.append('ciudad',ciudad);
+  fd.append('herramienta','LoteCheck');
+  fd.append('resultado',`Lote: ${l.lot||'—'} | Lotización: ${l.lotiz} | Precio: S/ ${l.precio.toLocaleString()} | Tel: ${l.tel}`);
+  fetch(APPS_URL,{method:'POST',body:fd}).catch(()=>{}).finally(()=>{
+    document.getElementById('modal-tel').textContent=l.tel||'Sin teléfono registrado';
+    document.getElementById('modal-cont').textContent=l.cont?'👤 '+l.cont:'';
+    document.getElementById('modal-form-st').style.display='none';
+    document.getElementById('modal-tel-st').style.display='block';
+  });
 }
 function cerrarModal(){document.getElementById('modal-ov').classList.remove('v');}
 document.getElementById('modal-ov').addEventListener('click',e=>{if(e.target.id==='modal-ov')cerrarModal();});
