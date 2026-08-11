@@ -446,14 +446,13 @@ function enviarPublicar(){
   if(!nombre||!empresa||!tel){alert('Por favor completa nombre, empresa y WhatsApp.');return;}
   const btn=document.getElementById('pub-btn-send');
   btn.disabled=true; btn.textContent='Enviando...';
-  const datos=new URLSearchParams({
-    nombre,
-    email:     document.getElementById('pub-email').value.trim(),
-    ciudad:    document.getElementById('pub-tipo').value,
-    herramienta:'ProCheck-Publicar',
-    resultado: `Empresa: ${empresa} | WhatsApp: ${tel}`
-  });
-  fetch(AS_URL,{method:'POST',body:datos,headers:{'Content-Type':'text/plain'}})
+  const fd=new FormData();
+  fd.append('nombre',nombre);
+  fd.append('email',document.getElementById('pub-email').value.trim());
+  fd.append('ciudad',document.getElementById('pub-tipo').value);
+  fd.append('herramienta','ProCheck-Publicar');
+  fd.append('resultado',`Empresa: ${empresa} | WhatsApp: ${tel}`);
+  fetch(AS_URL,{method:'POST',body:fd})
     .catch(()=>{})
     .finally(()=>{
       document.getElementById('modal-pub-form-state').style.display='none';
