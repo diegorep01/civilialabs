@@ -174,6 +174,25 @@ header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;
 .modal-close{width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
 .modal-close:hover{background:var(--teal2);}
 
+/* MODAL PUBLICAR */
+.modal-pub-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:10000;align-items:center;justify-content:center;}
+.modal-pub-ov.v{display:flex;}
+.modal-pub-box{background:#fff;border-radius:16px;padding:28px;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;}
+.modal-pub-ttl{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.modal-pub-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.modal-pub-label{display:block;font-size:12px;font-weight:600;color:var(--texto);margin-bottom:5px;margin-top:14px;}
+.modal-pub-input{width:100%;padding:10px 13px;border:1.5px solid var(--borde);border-radius:9px;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .15s;}
+.modal-pub-input:focus{border-color:var(--teal);}
+.modal-pub-btns{display:flex;gap:10px;margin-top:20px;}
+.modal-pub-send{flex:1;padding:12px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;}
+.modal-pub-send:hover{background:var(--teal2);}
+.modal-pub-send:disabled{background:var(--muted);cursor:not-allowed;}
+.modal-pub-cancel{padding:12px 18px;background:none;border:1.5px solid var(--borde);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;}
+.modal-pub-ok{text-align:center;padding:20px 0;}
+.modal-pub-ok-ico{font-size:48px;margin-bottom:12px;}
+.modal-pub-ok-ttl{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.modal-pub-ok-sub{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+
 @media(max-width:640px){
   .filtros-bar{padding:12px 16px;}
   .empresas-wrap{padding:20px 16px 48px;}
@@ -194,7 +213,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="logo-title">Pro<span>Check</span></div>
     <div class="logo-sub">Directorio de constructoras e inmobiliarias en Tarapoto / San Martín</div>
   </div>
-  <a href="mailto:diegocisnerosherrera@gmail.com?subject=Quiero publicar mi empresa en ProCheck" class="btn-publicar">+ Publicar mi empresa</a>
+  <button onclick="abrirModalPublicar()" class="btn-publicar">+ Publicar mi empresa</button>
 </header>
 
 <div class="hero">
@@ -229,8 +248,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <h2>¿Tu empresa no está aquí?</h2>
   <p>Publica tu perfil y llega a clientes que ya están buscando construir o comprar su lote en Tarapoto.</p>
   <div class="cta-pub-btns">
-    <a href="mailto:diegocisnerosherrera@gmail.com?subject=Quiero publicar mi empresa en ProCheck" class="btn-cta-prim">Publicar mi empresa →</a>
+    <button onclick="abrirModalPublicar()" class="btn-cta-prim">Publicar mi empresa →</button>
     <a href="../" class="btn-cta-sec">Ver otras herramientas</a>
+  </div>
+</div>
+
+<!-- MODAL PUBLICAR -->
+<div class="modal-pub-ov" id="modal-pub-ov">
+  <div class="modal-pub-box">
+    <div id="modal-pub-form-state">
+      <div class="modal-pub-ttl">Publicar mi empresa</div>
+      <div class="modal-pub-sub">Te contactamos en menos de 24 horas. Sin compromiso.</div>
+      <label class="modal-pub-label">Nombre de contacto *</label>
+      <input class="modal-pub-input" id="pub-nombre" type="text" placeholder="Ej: Carlos Ramírez"/>
+      <label class="modal-pub-label">Nombre de la empresa *</label>
+      <input class="modal-pub-input" id="pub-empresa" type="text" placeholder="Ej: Constructora San Martín"/>
+      <label class="modal-pub-label">WhatsApp *</label>
+      <input class="modal-pub-input" id="pub-tel" type="tel" placeholder="Ej: 944 123 456"/>
+      <label class="modal-pub-label">Email</label>
+      <input class="modal-pub-input" id="pub-email" type="email" placeholder="correo@empresa.com"/>
+      <label class="modal-pub-label">Tipo de servicio</label>
+      <select class="modal-pub-input" id="pub-tipo">
+        <option value="Construcción">Construcción</option>
+        <option value="Lotes">Venta de lotes</option>
+        <option value="Construcción + Lotes">Construcción + Lotes</option>
+      </select>
+      <div class="modal-pub-btns">
+        <button class="modal-pub-cancel" onclick="cerrarModalPublicar()">Cancelar</button>
+        <button class="modal-pub-send" id="pub-btn-send" onclick="enviarPublicar()">Enviar solicitud →</button>
+      </div>
+    </div>
+    <div id="modal-pub-ok-state" style="display:none" class="modal-pub-ok">
+      <div class="modal-pub-ok-ico">✅</div>
+      <div class="modal-pub-ok-ttl">¡Solicitud recibida!</div>
+      <div class="modal-pub-ok-sub">Te escribimos al WhatsApp en menos de 24 horas para coordinar los detalles de tu perfil.</div>
+      <button class="modal-pub-send" style="max-width:200px;margin:0 auto;display:block;" onclick="cerrarModalPublicar()">Cerrar</button>
+    </div>
   </div>
 </div>
 
@@ -367,6 +420,46 @@ document.getElementById('modal-ov').addEventListener('click',e=>{if(e.target.id=
 // Init
 visible.sort((a,b)=>b.destacada - a.destacada);
 render();
+
+// ── MODAL PUBLICAR ──────────────────────────────────────────
+const AS_URL = 'https://script.google.com/macros/s/AKfycbzlP3TKqjhoienKbwKoU5um4bowim5fF0Wy0LSRELFztIoEEflhwppEMhzg46SvlDU0bg/exec';
+
+function abrirModalPublicar(){
+  document.getElementById('modal-pub-form-state').style.display='';
+  document.getElementById('modal-pub-ok-state').style.display='none';
+  const btn=document.getElementById('pub-btn-send');
+  btn.disabled=false; btn.textContent='Enviar solicitud →';
+  ['pub-nombre','pub-empresa','pub-tel','pub-email'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modal-pub-ov').classList.add('v');
+}
+function cerrarModalPublicar(){
+  document.getElementById('modal-pub-ov').classList.remove('v');
+}
+document.getElementById('modal-pub-ov').addEventListener('click',e=>{
+  if(e.target.id==='modal-pub-ov') cerrarModalPublicar();
+});
+
+function enviarPublicar(){
+  const nombre  = document.getElementById('pub-nombre').value.trim();
+  const empresa = document.getElementById('pub-empresa').value.trim();
+  const tel     = document.getElementById('pub-tel').value.trim();
+  if(!nombre||!empresa||!tel){alert('Por favor completa nombre, empresa y WhatsApp.');return;}
+  const btn=document.getElementById('pub-btn-send');
+  btn.disabled=true; btn.textContent='Enviando...';
+  const datos=new URLSearchParams({
+    nombre,
+    email:     document.getElementById('pub-email').value.trim(),
+    ciudad:    document.getElementById('pub-tipo').value,
+    herramienta:'ProCheck-Publicar',
+    resultado: `Empresa: ${empresa} | WhatsApp: ${tel}`
+  });
+  fetch(AS_URL,{method:'POST',body:datos,headers:{'Content-Type':'text/plain'}})
+    .catch(()=>{})
+    .finally(()=>{
+      document.getElementById('modal-pub-form-state').style.display='none';
+      document.getElementById('modal-pub-ok-state').style.display='';
+    });
+}
 </script>
 </body>
 </html>
