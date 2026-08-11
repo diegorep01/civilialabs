@@ -447,11 +447,12 @@ function enviarPublicar(){
   const btn=document.getElementById('pub-btn-send');
   btn.disabled=true; btn.textContent='Enviando...';
   fetch(AS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
-    nombre,
-    email:      document.getElementById('pub-email').value.trim(),
-    ciudad:     document.getElementById('pub-tipo').value,
     herramienta:'ProCheck-Publicar',
-    resultado:  `Empresa: ${empresa} | WhatsApp: ${tel}`
+    nombre,
+    empresa,
+    tel,
+    email: document.getElementById('pub-email').value.trim(),
+    tipo:  document.getElementById('pub-tipo').value
   })})
     .catch(()=>{})
     .finally(()=>{
