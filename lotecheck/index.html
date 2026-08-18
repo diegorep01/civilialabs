@@ -567,6 +567,7 @@ function enviarLead(){
   fd.append('herramienta','LoteCheck');
   fd.append('resultado',`Lote: ${l.lot||'—'} | Lotización: ${l.lotiz} | Precio: S/ ${l.precio.toLocaleString()} | Tel: ${l.tel}`);
   fetch(APPS_URL,{method:'POST',body:fd}).catch(()=>{}).finally(()=>{
+    dataLayer.push({event:'lead_enviado',herramienta:'LoteCheck',ciudad:ciudad});
     document.getElementById('modal-tel').textContent=l.tel||'Sin teléfono registrado';
     document.getElementById('modal-cont').textContent=l.cont?'👤 '+l.cont:'';
     document.getElementById('modal-form-st').style.display='none';

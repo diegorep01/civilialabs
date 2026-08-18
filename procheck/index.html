@@ -456,6 +456,7 @@ function enviarPublicar(){
   })})
     .catch(()=>{})
     .finally(()=>{
+      dataLayer.push({event:'lead_enviado',herramienta:'ProCheck',ciudad:'—'});
       document.getElementById('modal-pub-form-state').style.display='none';
       document.getElementById('modal-pub-ok-state').style.display='';
     });

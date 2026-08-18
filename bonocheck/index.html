@@ -875,7 +875,7 @@ doc('groupTerreno').style.display        = 'none';
       const res=await fetch(CL_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
         body:JSON.stringify({nombre,ciudad,email,permiso,herramienta:CL_H,pdfBase64:b64})});
       const d=await res.json();
-      if(d.ok){clMsg('✓ ¡Enviado! Revisa tu bandeja de entrada.','#15803D');btn.textContent='¡Enviado!';setTimeout(clCerrar,3500);}
+      if(d.ok){dataLayer.push({event:'lead_enviado',herramienta:CL_H,ciudad:ciudad});clMsg('✓ ¡Enviado! Revisa tu bandeja de entrada.','#15803D');btn.textContent='¡Enviado!';setTimeout(clCerrar,3500);}
       else throw new Error(d.error);
     }catch(err){
       clMsg(err.message||'Error al enviar. Inténtalo de nuevo.','#DC2626');
