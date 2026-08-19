@@ -184,12 +184,57 @@ table.comp tr:last-child td{border-bottom:none;}
 .cl-cnt{font-size:14px;font-weight:800;line-height:1;}
 .cl-min{font-size:9px;opacity:.85;margin-top:1px;white-space:nowrap;}
 @media(max-width:768px){
+  /* Sidebar: overlay desde izquierda */
+  aside{
+    position:fixed;top:0;left:0;width:85%;max-width:310px;height:100%;
+    z-index:4000;transform:translateX(-100%);transition:transform .26s ease;
+    box-shadow:4px 0 24px rgba(0,0,0,.2);overflow-y:auto;background:#fff;
+  }
+  aside.abierto{transform:translateX(0);}
+  .filtros-overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,.45);z-index:3999;
+  }
+  .filtros-overlay.visible{display:block;}
+  /* Panel derecho: ancho completo */
   .contenido{flex-direction:column;height:auto;}
-  aside{width:100%;height:auto;}
-  .cards-grid{grid-template-columns:1fr;}
+  .panel-der{width:100%;}
+  /* Barra superior */
+  .barra-top{padding:8px 12px;}
+  .contador{font-size:12px;}
+  .vista-btn{padding:6px 12px;font-size:12px;}
+  /* Botón flotante filtros */
+  .btn-filtros-mob{
+    display:flex;align-items:center;gap:6px;
+    position:fixed;bottom:22px;left:14px;z-index:3998;
+    background:var(--navy);color:#fff;border:none;border-radius:24px;
+    padding:11px 18px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+    box-shadow:0 4px 16px rgba(0,0,0,.28);cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  /* Mapa ocupa pantalla */
+  #mapa-container{height:calc(100vh - 110px);}
+  #mapa{height:100%;}
+  /* Lista */
+  .cards-container{padding:10px;}
+  .cards-grid{grid-template-columns:1fr;gap:9px;}
+  .card{padding:12px;}
+  /* Burbujas más grandes para touch */
+  .precio-burbuja{font-size:12px;padding:6px 11px;}
+  /* Modal */
+  .modal-box{padding:20px 16px;width:96%;max-height:90vh;overflow-y:auto;}
+  /* Valorar tab */
   .form-grid{grid-template-columns:1fr;}
   .hstats{display:none;}
-  #tab-valoro{padding:16px;}
+  #tab-valoro{padding:14px;}
+  /* Tabs */
+  .tabs{padding:0 10px;}
+  .tab-btn{padding:11px 16px;font-size:13px;}
+}
+@media(max-width:400px){
+  header{padding:10px 12px;}
+  .logo-title{font-size:16px;}
+  .btn-filtros-mob{padding:10px 14px;font-size:12px;bottom:16px;left:12px;}
 }
 </style>
 </head>
@@ -199,6 +244,7 @@ table.comp tr:last-child td{border-bottom:none;}
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W789C5WW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+<div class="filtros-overlay" id="filtros-overlay" onclick="cerrarFiltrosMob()"></div>
 
 <header>
   <div>
@@ -221,7 +267,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div class="contenido" id="tab-busco" style="display:flex;">
 
-  <aside>
+  <aside id="sidebar-aside">
     <div class="ss">
       <h3>Buscar</h3>
       <input class="buscar" type="text" id="inp-buscar" placeholder="Lotización o lote..." oninput="aplicarFiltros()"/>
@@ -673,6 +719,16 @@ function verEnMapa(lat,lon,id){
   mapa.setView([lat,lon],16);
   if(markersMap[id]) cluster.zoomToShowLayer(markersMap[id],()=>markersMap[id].openPopup());
 }
+function abrirFiltrosMob(){
+  document.getElementById('sidebar-aside').classList.add('abierto');
+  document.getElementById('filtros-overlay').classList.add('visible');
+  document.body.style.overflow='hidden';
+}
+function cerrarFiltrosMob(){
+  document.getElementById('sidebar-aside').classList.remove('abierto');
+  document.getElementById('filtros-overlay').classList.remove('visible');
+  document.body.style.overflow='';
+}
 const APPS_URL='https://script.google.com/macros/s/AKfycbzlP3TKqjhoienKbwKoU5um4bowim5fF0Wy0LSRELFztIoEEflhwppEMhzg46SvlDU0bg/exec';
 let _loteActivo=null;
 function mostrarContacto(id){
@@ -746,5 +802,7 @@ function calcularValor(){
 actualizarLabels(); setVista('mapa'); aplicarFiltros();
 
 </script>
+<button class="btn-filtros-mob" id="btn-filtros-mob" onclick="abrirFiltrosMob()">⚙ Filtros</button>
+
 </body>
 </html>

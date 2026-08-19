@@ -114,7 +114,50 @@ table.bt tr.empty td{color:#c8d4cf}
 .legal-text{font-size:.6rem;color:var(--muted);line-height:1.4;flex:1}
 .legal-logo{display:flex;align-items:center;gap:6px;opacity:.6;flex-shrink:0}
 .legal-logo img{height:18px;width:auto}
-@media(max-width:768px){html,body{height:auto;overflow:auto}.layout{grid-template-columns:1fr;height:auto;overflow:visible}.left{height:auto}.cats{max-height:52vh}.right{height:100svh}.photo-wrap{flex:0 0 40%}.header-right{display:none}}
+@media(max-width:768px){
+  html,body{height:auto;overflow:auto;}
+  /* Layout apilado */
+  .layout{grid-template-columns:1fr;height:auto;overflow:visible;}
+  .left{height:auto;max-height:none;padding:14px 14px 10px;}
+  .right{height:auto;min-height:50vh;padding:14px;}
+  /* Foto más pequeña en móvil */
+  .photo-wrap{flex:0 0 36%;}
+  /* Ocultar elementos de escritorio */
+  .header-right{display:none;}
+  /* Categorías: scroll horizontal en móvil */
+  .cats{max-height:48vh;overflow-y:auto;}
+  /* Inputs más grandes para touch */
+  input,select,textarea{min-height:42px;font-size:16px!important;}
+  /* Sliders más gruesos */
+  input[type=range]{height:6px;}
+  /* Botones principales táctiles */
+  .btn-calc,.btn-enviar,.btn-primary,button[type=submit]{
+    min-height:44px;font-size:15px;border-radius:10px;
+  }
+  /* Formulario en una sola columna */
+  .form-row,.form-grid,.fg-row{
+    grid-template-columns:1fr!important;
+    flex-direction:column;
+  }
+  /* Cards de resultado */
+  .res-box{padding:16px 14px;}
+  .res-precio{font-size:28px;}
+  /* Tabla comparativa: scroll horizontal */
+  .comp-wrap,.table-wrap{overflow-x:auto;}
+  table.comp{min-width:480px;}
+  /* Modal */
+  .modal-box,.cl-overlay>div{
+    padding:20px 16px;width:95%;max-height:90vh;overflow-y:auto;border-radius:14px;
+  }
+  /* Modal lead capture */
+  .cl-overlay{padding:12px;}
+}
+@media(max-width:400px){
+  .logo-title,.header-title{font-size:16px!important;}
+  .left{padding:10px;}
+  .right{padding:10px;}
+  .res-precio{font-size:24px;}
+}
 @media print{
   html,body{height:auto;overflow:auto;background:#fff}
   .print-header{display:flex !important;align-items:center;justify-content:space-between;padding:0 0 14px;border-bottom:2px solid #14B8A6;margin-bottom:18px}

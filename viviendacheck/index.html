@@ -270,11 +270,19 @@ footer p { color: rgba(255,255,255,.45); font-size: .72rem; text-align: center; 
 
 /* RESPONSIVE */
 @media (max-width: 680px) {
-  header { padding: 14px 16px; gap: 12px; }
+  header { padding: 10px 14px; gap: 10px; }
   .header-badge { display: none; }
   .form-grid, .config-row { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: 1fr 1fr; }
-  .header-text h1 { font-size: 1.3rem; }
+  .header-text h1 { font-size: 1.2rem; }
+  input, select { min-height: 42px; font-size: 16px !important; }
+  button, .btn-calc, .btn-primary { min-height: 44px; font-size: 15px; }
+  .modal-box, .cl-overlay > div { padding: 18px 14px; width: 96%; max-height: 90vh; overflow-y: auto; border-radius: 14px; }
+  .table-wrap, .chart-wrap { overflow-x: auto; }
+}
+@media (max-width: 400px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .header-text h1 { font-size: 1.05rem; }
 }
 
 /* PRINT */

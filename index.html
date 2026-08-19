@@ -16,85 +16,78 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --navy:#1E3A5F;
-  --teal:#14B8A6;
-  --teal-dark:#0D9488;
-  --bg:#F8FAFC;
-  --text:#0F172A;
-  --muted:#64748B;
-  --border:#E2E8F0;
-  --green:#22C55E;
+  --navy:#1E3A5F;--teal:#14B8A6;--teal-dark:#0D9488;
+  --bg:#F8FAFC;--text:#0F172A;--muted:#64748B;--border:#E2E8F0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* ── HEADER ── */
-header{background:var(--navy);padding:1rem 1.5rem;display:flex;align-items:center;gap:.875rem}
-.header-logo{height:40px;filter:brightness(0) invert(1)}
-.header-name{font-family:'Sora',sans-serif;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.12em;text-transform:uppercase;margin-top:.15rem}
+header{background:var(--navy);padding:.875rem 1.25rem;display:flex;align-items:center;gap:.75rem}
+.header-logo{height:36px;filter:brightness(0) invert(1)}
+.header-name{font-family:'Sora',sans-serif;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.12em;text-transform:uppercase;margin-top:.1rem}
 
 /* ── HERO ── */
-.hero{background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);padding:4rem 1.5rem 5rem;text-align:center;color:#fff;position:relative;overflow:hidden}
-.hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:48px;background:var(--bg);clip-path:ellipse(55% 100% at 50% 100%)}
-.hero-eyebrow{font-size:.8125rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem}
-.hero h1{font-family:'Sora',sans-serif;font-size:clamp(1.75rem,5vw,2.75rem);font-weight:800;line-height:1.15;margin-bottom:1.25rem}
-.hero p{font-size:1.0625rem;color:rgba(255,255,255,.78);max-width:560px;margin:0 auto;line-height:1.65}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);padding:2rem 1.25rem 3rem;text-align:center;color:#fff;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:40px;background:var(--bg);clip-path:ellipse(55% 100% at 50% 100%)}
+.hero-eyebrow{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:.625rem}
+.hero h1{font-family:'Sora',sans-serif;font-size:clamp(1.35rem,4vw,2.25rem);font-weight:800;line-height:1.2;margin-bottom:.625rem}
+.hero p{font-size:.875rem;color:rgba(255,255,255,.75);max-width:480px;margin:0 auto;line-height:1.6}
 
-/* ── HERRAMIENTAS ── */
-.tools{max-width:1140px;margin:-24px auto 0;padding:0 1rem 4rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+/* ── GRID DE HERRAMIENTAS ── */
+.tools{
+  max-width:900px;margin:-20px auto 0;
+  padding:0 14px 40px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+@media(min-width:600px){.tools{grid-template-columns:repeat(3,1fr);gap:16px;padding:0 20px 48px}}
 
-.tool-card{background:#fff;border-radius:16px;border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.07);overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
-.tool-card:hover{transform:translateY(-4px);box-shadow:0 8px 36px rgba(0,0,0,.12)}
-
-.tool-card-top{padding:2rem 2rem 1.5rem;flex:1}
-.tool-badge{display:inline-flex;align-items:center;gap:.4rem;background:#F0FDFA;border:1px solid #99F6E4;color:var(--teal-dark);font-size:.75rem;font-weight:600;border-radius:999px;padding:.3rem .8rem;margin-bottom:1.25rem}
-.tool-badge.amber{background:#FFFBEB;border-color:#FDE68A;color:#92400E}
-.tool-number{font-family:'Sora',sans-serif;font-size:.75rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
-.tool-name{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:.75rem;line-height:1.15}
-.tool-name span{color:var(--teal)}
-.tool-desc{font-size:.9375rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem}
-
-.tool-features{list-style:none;display:flex;flex-direction:column;gap:.5rem}
-.tool-features li{font-size:.875rem;color:var(--text);display:flex;align-items:flex-start;gap:.5rem}
-.tool-features li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:.05rem}
-
-.tool-card-bottom{padding:1.25rem 2rem 1.75rem;border-top:1px solid var(--border);background:#FAFAFA}
-.tool-cta{display:flex;align-items:center;justify-content:space-between}
-.tool-cta span{font-weight:600;font-size:.9rem;color:var(--navy)}
-.cta-arrow{background:var(--teal);color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background .2s;flex-shrink:0}
-.tool-card:hover .cta-arrow{background:var(--teal-dark)}
-
-/* ── COMING SOON overlay ── */
-.tool-card.soon{pointer-events:none;opacity:.6}
-.tool-card.soon .cta-arrow{background:var(--muted)}
+.tool-card{
+  background:#fff;border:1.5px solid var(--border);border-radius:16px;
+  padding:18px 12px 14px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;
+  text-decoration:none;color:inherit;
+  transition:all .18s;
+  -webkit-tap-highlight-color:transparent;
+  cursor:pointer;
+}
+.tool-card:hover,.tool-card:active{
+  border-color:var(--teal);
+  box-shadow:0 6px 20px rgba(20,184,166,.15);
+  transform:translateY(-2px);
+}
+.tc-icon{font-size:28px;line-height:1;margin-bottom:4px}
+.tc-name{font-family:'Sora',sans-serif;font-size:1rem;font-weight:800;color:var(--navy);line-height:1.1}
+.tc-name span{color:var(--teal)}
+.tc-desc{font-size:.72rem;color:var(--muted);line-height:1.4;flex:1;margin-top:3px;padding:0 4px}
+.tc-cta{
+  margin-top:10px;background:var(--teal);color:#fff;
+  font-size:.7rem;font-weight:700;padding:5px 14px;border-radius:20px;
+  white-space:nowrap;
+}
+.tool-card:hover .tc-cta,.tool-card:active .tc-cta{background:var(--teal-dark)}
 
 /* ── SOBRE ── */
-.sobre{max-width:700px;margin:0 auto 5rem;padding:0 1.5rem;text-align:center}
-.sobre h2{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;color:var(--navy);margin-bottom:1rem}
-.sobre p{font-size:.9375rem;color:var(--muted);line-height:1.7}
-.sobre-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:2rem}
-.sobre-item{background:#fff;border:1px solid var(--border);border-radius:10px;padding:1.25rem 1rem;text-align:center}
-.sobre-item .icon{font-size:1.75rem;margin-bottom:.5rem}
-.sobre-item strong{display:block;font-family:'Sora',sans-serif;font-size:.875rem;color:var(--navy);margin-bottom:.3rem}
-.sobre-item span{font-size:.8rem;color:var(--muted);line-height:1.5}
+.sobre{max-width:700px;margin:0 auto 3.5rem;padding:0 1.25rem;text-align:center}
+.sobre h2{font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:700;color:var(--navy);margin-bottom:.75rem}
+.sobre p{font-size:.875rem;color:var(--muted);line-height:1.7}
+.sobre-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-top:1.25rem}
+@media(min-width:540px){.sobre-grid{grid-template-columns:repeat(4,1fr)}}
+.sobre-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem .875rem;text-align:center}
+.sobre-item .icon{font-size:1.4rem;margin-bottom:.35rem}
+.sobre-item strong{display:block;font-family:'Sora',sans-serif;font-size:.78rem;color:var(--navy);margin-bottom:.2rem}
+.sobre-item span{font-size:.7rem;color:var(--muted);line-height:1.45}
 
 /* ── FOOTER ── */
-footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:2rem 1rem;font-size:.8rem}
-.footer-logo{height:26px;filter:brightness(0) invert(1);opacity:.65;margin-bottom:.75rem}
+footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:1.5rem 1rem;font-size:.78rem}
+.footer-logo{height:22px;filter:brightness(0) invert(1);opacity:.65;margin-bottom:.5rem}
 footer strong{color:#fff}
 footer a{color:var(--teal);text-decoration:none}
 footer a:hover{text-decoration:underline}
-.footer-links{display:flex;justify-content:center;gap:1.5rem;margin-top:.875rem;flex-wrap:wrap}
-
-@media(max-width:480px){
-  .hero{padding:3rem 1.25rem 4.5rem}
-  .tools{margin-top:-16px;gap:1rem}
-  .tool-card-top{padding:1.5rem 1.5rem 1.25rem}
-  .tool-card-bottom{padding:1rem 1.5rem 1.25rem}
-}
+.footer-links{display:flex;justify-content:center;gap:.875rem;margin-top:.625rem;flex-wrap:wrap;font-size:.72rem}
 </style>
-</head>
-<body>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W789C5WW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -109,143 +102,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- HERO -->
 <div class="hero">
   <div class="hero-eyebrow">Ingeniería · Datos · Decisiones más claras</div>
-  <h1>Herramientas gratuitas para tu proyecto de vivienda en Perú</h1>
-  <p>Estimaciones claras, datos oficiales y sin tecnicismos. Selecciona la herramienta que necesitas.</p>
+  <h1>Herramientas gratuitas para tu vivienda en Perú</h1>
+  <p>Selecciona la herramienta que necesitas. Sin registro, sin costo.</p>
 </div>
 
 <!-- HERRAMIENTAS -->
 <div class="tools">
 
-  <!-- ConstruCheck -->
   <a href="./lotecheck/" class="tool-card">
-    <div class="tool-card-top">
-      <div class="tool-badge">&#x2713; Disponible</div>
-      <div class="tool-number">Herramienta 05</div>
-      <div class="tool-name">Lote<span>Check</span></div>
-      <div class="tool-desc">Busca lotes disponibles en Tarapoto y estima el valor de mercado de tu terreno con datos reales del mercado.</div>
-      <ul class="tool-features">
-        <li>1,669 lotes reales de 18 lotizaciones</li>
-        <li>Filtra por presupuesto, area, servicios y documentos</li>
-        <li>Mapa interactivo con clustering de lotes</li>
-        <li>Valoracion referencial con comparables reales</li>
-      </ul>
-    </div>
-    <div class="tool-card-bottom">
-      <div class="tool-cta">
-        <span>Buscar y valorar lotes</span>
-        <div class="cta-arrow">&#x2192;</div>
-      </div>
-    </div>
+    <div class="tc-icon">🗺️</div>
+    <div class="tc-name">Lote<span>Check</span></div>
+    <div class="tc-desc">Encuentra y valora lotes en Tarapoto</div>
+    <div class="tc-cta">Abrir →</div>
   </a>
 
   <a href="./procheck/" class="tool-card">
-    <div class="tool-card-top">
-      <div class="tool-badge">&#x2713; Disponible</div>
-      <div class="tool-number">Herramienta 06</div>
-      <div class="tool-name">Pro<span>Check</span></div>
-      <div class="tool-desc">Encuentra constructoras e inmobiliarias verificadas en Tarapoto y San Martin para tu proyecto de lote o vivienda.</div>
-      <ul class="tool-features">
-        <li>Empresas de construccion y venta de lotes</li>
-        <li>Filtra por tipo de servicio y zona</li>
-        <li>Contacto directo con cada empresa</li>
-        <li>Empresas destacadas con perfil completo</li>
-      </ul>
-    </div>
-    <div class="tool-card-bottom">
-      <div class="tool-cta">
-        <span>Encontrar profesional</span>
-        <div class="cta-arrow">&#x2192;</div>
-      </div>
-    </div>
+    <div class="tc-icon">👷</div>
+    <div class="tc-name">Pro<span>Check</span></div>
+    <div class="tc-desc">Conecta con constructores e inmobiliarias</div>
+    <div class="tc-cta">Abrir →</div>
   </a>
 
   <a href="./construcheck/" class="tool-card">
-    <div class="tool-card-top">
-      <div class="tool-badge">✓ Disponible</div>
-      <div class="tool-number">Herramienta 01</div>
-      <div class="tool-name">Constru<span>Check</span></div>
-      <div class="tool-desc">Estima el costo de construir, ampliar o remodelar tu vivienda en Perú con datos oficiales del CVU 2025–2026.</div>
-      <ul class="tool-features">
-        <li>Presupuesto por categorías (muros, techos, pisos, baños…)</li>
-        <li>Tres regiones: Costa, Sierra y Selva</li>
-        <li>Datos del R.D. N° 00015-2025-VIVIENDA</li>
-        <li>Exporta tu resultado en PDF</li>
-      </ul>
-    </div>
-    <div class="tool-card-bottom">
-      <div class="tool-cta">
-        <span>Estimar costo de obra</span>
-        <div class="cta-arrow">→</div>
-      </div>
-    </div>
+    <div class="tc-icon">🏗️</div>
+    <div class="tc-name">Constru<span>Check</span></div>
+    <div class="tc-desc">Estima el costo de tu obra</div>
+    <div class="tc-cta">Abrir →</div>
   </a>
 
   <a href="./bonocheck/" class="tool-card">
-    <div class="tool-card-top">
-      <div class="tool-badge">✓ Disponible</div>
-      <div class="tool-number">Herramienta 02</div>
-      <div class="tool-name">Bono<span>Check</span></div>
-      <div class="tool-desc">Descubre si puedes acceder a Techo Propio o al Crédito MiVivienda, y cuánto podría ser tu bono del buen pagador.</div>
-      <ul class="tool-features">
-        <li>Evalúa Techo Propio y Crédito MiVivienda</li>
-        <li>Calcula el BBP por tramos (hasta S/ 27,400)</li>
-        <li>Simula tu cuota mensual referencial</li>
-        <li>Parámetros oficiales UIT 2026 · S/ 5,500</li>
-      </ul>
-    </div>
-    <div class="tool-card-bottom">
-      <div class="tool-cta">
-        <span>Simular acceso a vivienda</span>
-        <div class="cta-arrow">→</div>
-      </div>
-    </div>
+    <div class="tc-icon">🏠</div>
+    <div class="tc-name">Bono<span>Check</span></div>
+    <div class="tc-desc">Calcula tu bono habitacional</div>
+    <div class="tc-cta">Abrir →</div>
   </a>
 
   <a href="./hipotecacheck/" class="tool-card">
-    <div class="tool-card-top">
-      <div class="tool-badge">✓ Disponible</div>
-      <div class="tool-number">Herramienta 04</div>
-      <div class="tool-name">Hipoteca<span>Check</span></div>
-      <div class="tool-desc">Compara los 6 principales bancos del Perú y encuentra cuál te ofrece la menor cuota hipotecaria en soles o dólares.</div>
-      <ul class="tool-features">
-        <li>Compara BCP, Scotiabank, Interbank, BBVA, BanBif y Pichincha</li>
-        <li>Disponible en soles y dólares</li>
-        <li>Muestra cuota mensual, intereses y total pagado</li>
-        <li>Calcula cuánto ahorras eligiendo el mejor banco</li>
-      </ul>
-    </div>
-    <div class="tool-card-bottom">
-      <div class="tool-cta">
-        <span>Comparar bancos hipotecarios</span>
-        <div class="cta-arrow">→</div>
-      </div>
-    </div>
+    <div class="tc-icon">🏦</div>
+    <div class="tc-name">Hipoteca<span>Check</span></div>
+    <div class="tc-desc">Compara hipotecas de bancos peruanos</div>
+    <div class="tc-cta">Abrir →</div>
   </a>
 
   <a href="./viviendacheck/" class="tool-card">
-    <div class="tool-card-top">
-      <div class="tool-badge">✓ Disponible</div>
-      <div class="tool-number">Herramienta 03</div>
-      <div class="tool-name">Vivienda<span>Check</span></div>
-      <div class="tool-desc">Compara el costo total de alquilar versus comprar tu vivienda en Perú y descubre cuál opción te conviene más.</div>
-      <ul class="tool-features">
-        <li>Calcula tu cuota hipotecaria mensual</li>
-        <li>Compara el gasto acumulado año a año</li>
-        <li>Punto de equilibrio y patrimonio generado</li>
-        <li>Exporta tu resultado en PDF</li>
-      </ul>
-    </div>
-    <div class="tool-card-bottom">
-      <div class="tool-cta">
-        <span>Comparar alquiler vs compra</span>
-        <div class="cta-arrow">→</div>
-      </div>
-    </div>
+    <div class="tc-icon">⚖️</div>
+    <div class="tc-name">Vivienda<span>Check</span></div>
+    <div class="tc-desc">¿Alquiler o compra? Compara opciones</div>
+    <div class="tc-cta">Abrir →</div>
   </a>
 
 </div><!-- /.tools -->
 
-<!-- SOBRE -->
 <div class="sobre">
   <h2>¿Qué es CivilIA Labs?</h2>
   <p>Una iniciativa que acerca los conceptos de construcción y vivienda a todas las personas. Transformamos normas técnicas en herramientas claras y prácticas para ayudarte a tomar mejores decisiones.</p>
@@ -281,6 +188,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div><strong>CivilIA Labs</strong> · Herramientas digitales para ingeniería civil y vivienda en Perú</div>
   <div style="margin-top:.5rem">Las estimaciones son referenciales. No reemplazan la evaluación profesional ni la oficial.</div>
   <div class="footer-links">
+    <a href="./lotecheck/">LoteCheck</a>
+    <a href="./procheck/">ProCheck</a>
     <a href="./construcheck/">ConstruCheck</a>
     <a href="./bonocheck/">BonoCheck</a>
     <a href="./hipotecacheck/">HipotecaCheck</a>
