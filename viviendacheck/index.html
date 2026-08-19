@@ -771,7 +771,7 @@ function calcular() {
 <script>
 (function(){
   const CL_URL='https://script.google.com/macros/s/AKfycbzlP3TKqjhoienKbwKoU5um4bowim5fF0Wy0LSRELFztIoEEflhwppEMhzg46SvlDU0bg/exec',CL_H='ViviendaCheck',CL_S='#resultados';
-  window.clAbrir=function(){document.getElementById('cl-overlay').style.display='flex';};
+  window.clAbrir=function(){document.getElementById('cl-overlay').style.display='flex';dataLayer.push({event:'modal_abierto',herramienta:CL_H});};
   window.clCerrar=function(){
     document.getElementById('cl-overlay').style.display='none';
     document.getElementById('cl-msg').style.display='none';

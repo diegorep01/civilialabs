@@ -413,6 +413,7 @@ function abrirModal(id){
   document.getElementById('m-tel').textContent = '📞 ' + e.tel;
   document.getElementById('m-det').textContent = e.det;
   document.getElementById('modal-ov').classList.add('v');
+  dataLayer.push({event:'modal_abierto',herramienta:'ProCheck',tipo:'contacto'});
 }
 function cerrarModal(){document.getElementById('modal-ov').classList.remove('v');}
 document.getElementById('modal-ov').addEventListener('click',e=>{if(e.target.id==='modal-ov')cerrarModal();});
@@ -431,6 +432,7 @@ function abrirModalPublicar(){
   btn.disabled=false; btn.textContent='Enviar solicitud →';
   ['pub-nombre','pub-empresa','pub-tel','pub-email'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('modal-pub-ov').classList.add('v');
+  dataLayer.push({event:'modal_abierto',herramienta:'ProCheck',tipo:'publicar'});
 }
 function cerrarModalPublicar(){
   document.getElementById('modal-pub-ov').classList.remove('v');

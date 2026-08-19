@@ -553,6 +553,7 @@ function mostrarContacto(id){
   const btn=document.getElementById('ml-btn');
   btn.disabled=false; btn.textContent='Ver numero de contacto →';
   document.getElementById('modal-ov').classList.add('v');
+  dataLayer.push({event:'modal_abierto',herramienta:'LoteCheck'});
 }
 function enviarLead(){
   const nombre=document.getElementById('ml-nombre').value.trim();
@@ -576,6 +577,7 @@ function enviarLead(){
 }
 function cerrarModal(){document.getElementById('modal-ov').classList.remove('v');}
 document.getElementById('modal-ov').addEventListener('click',e=>{if(e.target.id==='modal-ov')cerrarModal();});
+document.getElementById('modal-tel').addEventListener('click',function(){dataLayer.push({event:'clic_telefono',herramienta:'LoteCheck'});});
 function calcularValor(){
   const area=parseFloat(document.getElementById('v-area').value);
   const lotizSel=document.getElementById('v-lotiz').value;
