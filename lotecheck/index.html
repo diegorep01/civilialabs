@@ -527,7 +527,7 @@ function iniciarMapa(){
     mapa=L.map('mapa').setView([-6.49,-76.37],12);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM · © CartoDB',maxZoom:20}).addTo(mapa);
     cluster=L.markerClusterGroup({
-      maxClusterRadius:70,
+      maxClusterRadius:45,
       spiderfyOnMaxZoom:false,
       zoomToBoundsOnClick:false,
       showCoverageOnHover:false,
@@ -546,41 +546,95 @@ function iniciarMapa(){
     mapa.addLayer(cluster);
     cluster.on('clusterclick',function(a){
       const ms=a.layer.getAllChildMarkers();
-      const rangos=[
-        {label:'Hasta S/ 15K',   min:0,      max:15000},
-        {label:'S/ 15K – 30K',   min:15000,  max:30000},
-        {label:'S/ 30K – 50K',   min:30000,  max:50000},
-        {label:'S/ 50K – 100K',  min:50000,  max:100000},
-        {label:'Más de S/ 100K', min:100000, max:Infinity},
-      ];
-      const filas=rangos.map(r=>{
-        const sub=ms.filter(m=>m.options._precio>=r.min&&m.options._precio<r.max);
-        if(!sub.length) return null;
-        const areas=sub.map(m=>m.options._area).filter(Boolean);
-        const aMin=areas.length?Math.min(...areas):null;
-        const aMax=areas.length?Math.max(...areas):null;
-        const aLabel=aMin?(aMin===aMax?aMin+' m²':aMin+'–'+aMax+' m²'):'—';
-        return {label:r.label,count:sub.length,aLabel};
-      }).filter(Boolean).slice(0,5);
       const total=ms.length;
-      const rows=filas.map(r=>`<tr>
-        <td style="padding:5px 8px;border-bottom:1px solid #E2E8F0;color:#0F172A;">${r.label}</td>
-        <td style="padding:5px 8px;border-bottom:1px solid #E2E8F0;color:#64748B;font-size:11px;">${r.aLabel}</td>
-        <td style="padding:5px 8px;border-bottom:1px solid #E2E8F0;text-align:right;font-weight:700;color:#1E3A5F;">${r.count}</td>
-      </tr>`).join('');
-      const html=`<div style="font-family:'Inter',sans-serif;min-width:240px;">
-        <div style="font-size:12px;font-weight:700;color:#1E3A5F;margin-bottom:10px;">\u{1F4CD} ${total} lotes en esta zona</div>
-        <table style="width:100%;border-collapse:collapse;font-size:12px;">
-          <thead><tr>
-            <th style="text-align:left;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">Precio</th>
-            <th style="text-align:left;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">Área</th>
-            <th style="text-align:right;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">Lotes</th>
-          </tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-        <div style="font-size:10px;color:#94A3B8;margin-top:8px;text-align:center;">Acerca el mapa para ver lotes individuales</div>
-      </div>`;
-      L.popup({maxWidth:300,closeButton:true}).setLatLng(a.layer.getLatLng()).setContent(html).openOn(mapa);
+      window._clBounds=a.layer.getBounds();
+
+      if(total<=6){
+        /* ── Pocos lotes: tarjetas individuales con contacto ── */
+        const cards=ms.map(m=>{
+          const l=LOTES.find(x=>x.id===m.options._id);
+          if(!l) return '';
+          return `<div style="padding:9px 0;border-bottom:1px solid #E2E8F0;">
+            <div style="font-size:9px;font-weight:700;color:#0D9488;text-transform:uppercase;letter-spacing:.5px;">${l.lotiz}</div>
+            <div style="font-size:12px;font-weight:600;color:#0F172A;margin:2px 0 4px;">${l.lot||'Lote disponible'}</div>
+            <div style="font-size:19px;font-weight:800;color:#1E3A5F;line-height:1;">${fmt(l.precio)}</div>
+            <div style="font-size:11px;color:#64748B;margin:2px 0 7px;">${l.area?l.area.toLocaleString()+' m²':''}</div>
+            ${l.tel?`<button onclick="mostrarContacto(${l.id})" style="width:100%;padding:7px;background:#1E3A5F;color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;">\u{1f4de} Ver contacto</button>`:''}
+          </div>`;
+        }).join('');
+        const html=`<div style="font-family:'Inter',sans-serif;min-width:230px;max-height:340px;overflow-y:auto;">${cards}</div>`;
+        L.popup({maxWidth:270,closeButton:true}).setLatLng(a.layer.getLatLng()).setContent(html).openOn(mapa);
+
+      } else {
+        /* ── Muchos lotes: tabla por precio + tabla por area ── */
+
+        /* Tabla precio: 5 cuantiles dinamicos */
+        const sorted=ms.slice().sort((x,y)=>x.options._precio-y.options._precio);
+        const N=Math.min(5,total);
+        const size=Math.ceil(total/N);
+        const filasP=[];
+        for(let i=0;i<sorted.length;i+=size){
+          const bk=sorted.slice(i,i+size);
+          const ps=bk.map(m=>m.options._precio);
+          const as_=bk.map(m=>m.options._area).filter(Boolean);
+          const pMin=Math.min(...ps),pMax=Math.max(...ps);
+          const pLabel=pMin===pMax?fmtK(pMin):fmtK(pMin)+' – '+fmtK(pMax);
+          const aMin=as_.length?Math.min(...as_):null;
+          const aMax=as_.length?Math.max(...as_):null;
+          const aLabel=aMin?(aMin===aMax?aMin+' m²':Math.round(aMin)+'–'+Math.round(aMax)+' m²'):'---';
+          filasP.push({pLabel,aLabel,count:bk.length});
+        }
+        const rowsP=filasP.map(r=>`<tr>
+          <td style="padding:5px 8px;border-bottom:1px solid #E2E8F0;color:#0F172A;">${r.pLabel}</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #E2E8F0;color:#64748B;font-size:11px;">${r.aLabel}</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #E2E8F0;text-align:right;font-weight:700;color:#1E3A5F;">${r.count}</td>
+        </tr>`).join('');
+
+        /* Tabla area: rangos fijos */
+        const aRangos=[
+          {label:'≤ 100 m²',min:0,max:100},
+          {label:'100–150 m²',min:100,max:150},
+          {label:'150–200 m²',min:150,max:200},
+          {label:'200–300 m²',min:200,max:300},
+          {label:'+ 300 m²',min:300,max:Infinity},
+        ];
+        const filasA=aRangos.map(r=>{
+          const cnt=ms.filter(m=>m.options._area>r.min&&m.options._area<=r.max).length;
+          return cnt?{label:r.label,count:cnt}:null;
+        }).filter(Boolean);
+        const rowsA=filasA.map(r=>`<tr>
+          <td style="padding:4px 8px;border-bottom:1px solid #E2E8F0;color:#0F172A;">${r.label}</td>
+          <td style="padding:4px 8px;border-bottom:1px solid #E2E8F0;text-align:right;font-weight:700;color:#1E3A5F;">${r.count}</td>
+        </tr>`).join('');
+
+        const html=`<div style="font-family:'Inter',sans-serif;min-width:260px;max-height:500px;overflow-y:auto;">
+          <div style="font-size:12px;font-weight:700;color:#1E3A5F;margin-bottom:10px;">\u{1f4cd} ${total} lotes en esta zona</div>
+
+          <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;">Por precio</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px;">
+            <thead><tr>
+              <th style="text-align:left;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">Precio</th>
+              <th style="text-align:left;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">m²</th>
+              <th style="text-align:right;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">Lotes</th>
+            </tr></thead>
+            <tbody>${rowsP}</tbody>
+          </table>
+
+          <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;">Por área</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px;">
+            <thead><tr>
+              <th style="text-align:left;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">Tamaño</th>
+              <th style="text-align:right;padding:4px 8px;background:#F8FAFC;color:#64748B;font-size:10px;text-transform:uppercase;border-bottom:2px solid #E2E8F0;">Lotes</th>
+            </tr></thead>
+            <tbody>${rowsA}</tbody>
+          </table>
+
+          <button onclick="mapa.closePopup();mapa.fitBounds(window._clBounds,{padding:[40,40]})" style="width:100%;padding:9px;background:#0D9488;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;margin-bottom:6px;">\u{1f50d} Acercar zona</button>
+          <div style="font-size:10px;color:#94A3B8;text-align:center;">Al acercar, haz clic en un lote para ver el teléfono</div>
+        </div>`;
+
+        L.popup({maxWidth:300,closeButton:true}).setLatLng(a.layer.getLatLng()).setContent(html).openOn(mapa);
+      }
     });
     mapaIniciado=true;
   }
@@ -603,7 +657,7 @@ function actualizarMapa(){
       html:`<div class="precio-burbuja${l.dest?' dest':''}" style="background:${color};">${pk}</div>`,
       className:'',iconSize:L.point(pw,28),iconAnchor:[pw/2,28]
     });
-    const mk=L.marker([l.lat,l.lon],{icon,_precio:l.precio,_area:l.area||0});
+    const mk=L.marker([l.lat,l.lon],{icon,_precio:l.precio,_area:l.area||0,_id:l.id});
     mk.bindPopup(`<div style="font-family:'Inter',sans-serif;min-width:220px;padding:2px 0;">
       <div style="font-size:9px;font-weight:700;color:#0D9488;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px;">${l.lotiz}</div>
       <div style="font-size:13px;font-weight:600;color:#0F172A;margin-bottom:8px;line-height:1.3;">${l.lot||'Lote disponible'}</div>
