@@ -428,7 +428,7 @@ function setVista(v){
   if(v==='mapa') iniciarMapa();
 }
 document.querySelectorAll('.chip-check').forEach(el=>{
-  el.addEventListener('click',()=>{el.classList.toggle('activo');aplicarFiltros();});
+  el.addEventListener('click',e=>{e.preventDefault();el.classList.toggle('activo');aplicarFiltros();});
 });
 document.querySelectorAll('.sc').forEach(el=>{
   el.addEventListener('click',()=>el.classList.toggle('activo'));
