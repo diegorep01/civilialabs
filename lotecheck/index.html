@@ -161,6 +161,28 @@ table.comp tr:last-child td{border-bottom:none;}
 .modal-aviso{font-size:10px;color:var(--muted);text-align:center;}
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--borde);border-radius:4px;}
+
+/* ── BURBUJAS DE PRECIO EN MAPA ── */
+.precio-burbuja{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:5px 10px;border-radius:20px;border:2.5px solid #fff;
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:700;
+  white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.3);
+  cursor:pointer;transition:transform .12s,box-shadow .12s;
+  color:#fff;
+}
+.precio-burbuja:hover{transform:scale(1.12);box-shadow:0 4px 16px rgba(0,0,0,.4);}
+.precio-burbuja.dest{background:#D97706!important;}
+.cl-burbuja{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:6px 13px;border-radius:22px;border:2.5px solid #fff;
+  background:var(--teal);color:#fff;font-family:'Inter',sans-serif;
+  box-shadow:0 3px 14px rgba(0,0,0,.32);cursor:pointer;
+  transition:transform .12s;
+}
+.cl-burbuja:hover{transform:scale(1.08);}
+.cl-cnt{font-size:14px;font-weight:800;line-height:1;}
+.cl-min{font-size:9px;opacity:.85;margin-top:1px;white-space:nowrap;}
 @media(max-width:768px){
   .contenido{flex-direction:column;height:auto;}
   aside{width:100%;height:auto;}
@@ -274,8 +296,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="barra-top">
       <div class="contador">Mostrando <b id="cnt">0</b> lotes</div>
       <div class="vista-btns">
-        <button class="vista-btn activo" onclick="setVista('lista')" id="vbtn-lista">≡ Lista</button>
-        <button class="vista-btn" onclick="setVista('mapa')" id="vbtn-mapa">🗺 Mapa</button>
+        <button class="vista-btn" onclick="setVista('lista')" id="vbtn-lista">≡ Lista</button>
+        <button class="vista-btn activo" onclick="setVista('mapa')" id="vbtn-mapa">🗺 Mapa</button>
       </div>
     </div>
     <div class="cards-container" id="lista-container">
@@ -388,7 +410,7 @@ const LOTES=[{"id":1,"lot":"Lote 01 Manzana B","lotiz":"Las Terrazas de Morales"
 const PRECIO_MIN=6664,PRECIO_MAX=500000,AREA_MIN=80,AREA_MAX=966;
 
 
-let lotesFiltrados=[...LOTES], vistaActiva='lista', mapaIniciado=false;
+let lotesFiltrados=[...LOTES], vistaActiva='mapa', mapaIniciado=false;
 let mapa=null, cluster=null, markersMap={};
 
 function switchTab(t){
@@ -504,32 +526,52 @@ function iniciarMapa(){
   if(!mapaIniciado){
     mapa=L.map('mapa').setView([-6.49,-76.37],12);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM · © CartoDB',maxZoom:20}).addTo(mapa);
-    cluster=L.markerClusterGroup({maxClusterRadius:40});
+    cluster=L.markerClusterGroup({
+      maxClusterRadius:70,
+      spiderfyOnMaxZoom:true,
+      showCoverageOnHover:false,
+      iconCreateFunction:function(cl){
+        const ms=cl.getAllChildMarkers();
+        const ps=ms.map(m=>m.options._precio).filter(Boolean);
+        const minP=ps.length?Math.min(...ps):0;
+        const cnt=cl.getChildCount();
+        const w=cnt>=100?100:cnt>=10?90:80;
+        return L.divIcon({
+          html:`<div class="cl-burbuja" style="min-width:${w}px"><div class="cl-cnt">${cnt} lotes</div><div class="cl-min">desde ${fmtK(minP)}</div></div>`,
+          className:'',iconSize:L.point(w,40),iconAnchor:[w/2,20]
+        });
+      }
+    });
     mapa.addLayer(cluster);
     mapaIniciado=true;
   }
   actualizarMapa();
 }
 function colorPrecio(p){
-  if(p<=15000) return'#22C55E';
-  if(p<=40000) return'#F59E0B';
-  if(p<=70000) return'#F97316';
-  return'#EF4444';
+  if(p<=15000) return'#16a34a';
+  if(p<=30000) return'#0D9488';
+  if(p<=60000) return'#1E3A5F';
+  return'#7C3AED';
 }
 function actualizarMapa(){
   if(!mapaIniciado) return;
   cluster.clearLayers(); markersMap={};
   lotesFiltrados.slice(0,600).forEach(l=>{
     const color=l.dest?'#D97706':colorPrecio(l.precio);
-    const icon=L.divIcon({html:`<div style="width:13px;height:13px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 2px 5px rgba(0,0,0,.3);"></div>`,iconSize:[13,13],iconAnchor:[6.5,6.5],className:''});
-    const mk=L.marker([l.lat,l.lon],{icon});
-    mk.bindPopup(`<div style="font-family:Inter,sans-serif;min-width:200px;">
-      <div style="font-size:10px;color:#0D9488;font-weight:700;margin-bottom:3px;">${l.lotiz}</div>
-      <div style="font-size:13px;font-weight:600;margin-bottom:5px;">${l.lot||'Lote disponible'}</div>
-      <div style="font-size:17px;font-weight:700;color:#1E3A5F;">${fmt(l.precio)}</div>
-      <div style="font-size:11px;color:#64748B;margin-bottom:8px;">${l.pm2?l.pm2.toLocaleString()+' S/m²':''} ${l.area?'· '+l.area+' m²':''}</div>
-      ${l.tel?`<button onclick="mostrarContacto(${l.id})" style="width:100%;padding:7px;background:#1E3A5F;color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;">📞 Ver contacto</button>`:''}
-    </div>`,{maxWidth:240});
+    const pk=fmtK(l.precio);
+    const pw=Math.max(58, pk.length*7+20);
+    const icon=L.divIcon({
+      html:`<div class="precio-burbuja${l.dest?' dest':''}" style="background:${color};">${pk}</div>`,
+      className:'',iconSize:L.point(pw,28),iconAnchor:[pw/2,28]
+    });
+    const mk=L.marker([l.lat,l.lon],{icon,_precio:l.precio});
+    mk.bindPopup(`<div style="font-family:'Inter',sans-serif;min-width:220px;padding:2px 0;">
+      <div style="font-size:9px;font-weight:700;color:#0D9488;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px;">${l.lotiz}</div>
+      <div style="font-size:13px;font-weight:600;color:#0F172A;margin-bottom:8px;line-height:1.3;">${l.lot||'Lote disponible'}</div>
+      <div style="font-size:22px;font-weight:800;color:#1E3A5F;line-height:1;margin-bottom:3px;">${fmt(l.precio)}</div>
+      <div style="font-size:11px;color:#64748B;margin-bottom:10px;">${l.pm2?l.pm2.toLocaleString()+' S/m²':''}${l.area?' · '+l.area.toLocaleString()+' m²':''}</div>
+      ${l.tel?`<button onclick="mostrarContacto(${l.id})" style="width:100%;padding:9px;background:#1E3A5F;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;">📞 Ver contacto</button>`:''}
+    </div>`,{maxWidth:260,closeButton:false});
     cluster.addLayer(mk); markersMap[l.id]=mk;
   });
 }
@@ -608,7 +650,7 @@ function calcularValor(){
   document.getElementById('resultado').style.display='block';
   document.getElementById('resultado').scrollIntoView({behavior:'smooth',block:'start'});
 }
-actualizarLabels(); aplicarFiltros();
+actualizarLabels(); setVista('mapa'); aplicarFiltros();
 
 </script>
 </body>
