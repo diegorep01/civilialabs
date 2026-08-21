@@ -333,6 +333,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <option value="Lotes">Venta de lotes</option>
         <option value="Construcción + Lotes">Construcción + Lotes</option>
       </select>
+      <input id="pub-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;pointer-events:none">
       <div class="modal-pub-btns">
         <button class="modal-pub-cancel" onclick="cerrarModalPublicar()">Cancelar</button>
         <button class="modal-pub-send" id="pub-btn-send" onclick="enviarPublicar()">Enviar solicitud →</button>
@@ -547,6 +548,7 @@ document.getElementById('modal-pub-ov').addEventListener('click',e=>{
 });
 
 function enviarPublicar(){
+  if(document.getElementById('pub-hp').value){const btn=document.getElementById('pub-btn-send');btn.disabled=true;btn.textContent='Enviando...';setTimeout(()=>{document.getElementById('modal-pub-form-state').style.display='none';document.getElementById('modal-pub-ok-state').style.display='';},800);return;}
   const nombre  = document.getElementById('pub-nombre').value.trim();
   const empresa = document.getElementById('pub-empresa').value.trim();
   const tel     = document.getElementById('pub-tel').value.trim();

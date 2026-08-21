@@ -394,6 +394,7 @@ calcBudget();
         <input id="cl-permiso" type="checkbox" style="margin-top:3px;flex-shrink:0;accent-color:#14B8A6">
         <span>Acepto recibir información útil sobre construcción, bonos y financiamiento de vivienda de CivilIA Labs.</span>
       </label>
+      <input id="cl-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;pointer-events:none">
       <p id="cl-msg" style="margin:0;font-size:.82rem;display:none"></p>
       <div style="display:flex;gap:10px;margin-top:2px">
         <button onclick="clCerrar()" style="flex:1;padding:10px;background:#F1F5F9;border:none;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:'Inter',sans-serif;font-weight:500">Cancelar</button>
@@ -418,6 +419,7 @@ calcBudget();
     const permiso=document.getElementById('cl-permiso').checked;
     if(!nombre||!ciudad||!email)return clMsg('Completa todos los campos.','#DC2626');
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return clMsg('Email no válido.','#DC2626');
+    if(document.getElementById('cl-hp').value){const b=document.getElementById('cl-btn');b.textContent='¡Enviado!';b.disabled=true;clMsg('✓ ¡Enviado! Revisa tu bandeja de entrada.','#15803D');setTimeout(clCerrar,3500);return;}
     const btn=document.getElementById('cl-btn');
     btn.textContent='Generando PDF…';btn.disabled=true;
     try{

@@ -454,6 +454,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <option>Lima</option><option>Otra</option>
         </select>
       </div>
+      <input id="ml-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;pointer-events:none">
       <button class="modal-submit" id="ml-btn" onclick="enviarLead()">Ver numero de contacto →</button>
       <div class="modal-aviso">Solo para mostrarte el contacto. Sin spam.</div>
     </div>
@@ -767,6 +768,7 @@ function mostrarContacto(id){
   dataLayer.push({event:'modal_abierto',herramienta:'LoteCheck'});
 }
 function enviarLead(){
+  if(document.getElementById('ml-hp').value){const btn=document.getElementById('ml-btn');btn.disabled=true;btn.textContent='Enviando...';setTimeout(()=>{document.getElementById('modal-form-st').style.display='none';document.getElementById('modal-tel-st').style.display='block';document.getElementById('modal-tel').textContent=_loteActivo&&_loteActivo.tel||'Sin teléfono registrado';document.getElementById('modal-cont').textContent=_loteActivo&&_loteActivo.cont?'👤 '+_loteActivo.cont:'';},800);return;}
   const nombre=document.getElementById('ml-nombre').value.trim();
   const email=document.getElementById('ml-email').value.trim();
   const ciudad=document.getElementById('ml-ciudad').value;
