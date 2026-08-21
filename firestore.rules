@@ -1,0 +1,36 @@
+// ===================================================================
+// REGLAS DE SEGURIDAD FIRESTORE — civilialabs.com / LoteCheck
+// Pega esto en: Firebase Console → Firestore → Reglas
+// ===================================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Lotes aprobados: lectura pública, escritura solo admin
+    match /lotes/{id} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.token.email == 'diegocisnerosherrera@gmail.com';
+    }
+
+    // Publicaciones de usuarios:
+    // - Crear: cualquiera (formulario público), pero solo con estado='pendiente' y campos requeridos
+    // - Leer/actualizar/eliminar: solo admin
+    match /publicaciones/{id} {
+      allow read, update, delete: if request.auth != null
+                                  && request.auth.token.email == 'diegocisnerosherrera@gmail.com';
+      allow create: if request.resource.data.estado == 'pendiente'
+                    && request.resource.data.keys().hasAll(['nombre_lote','lotiz','area','precio','nombre_vendedor','tel'])
+                    && request.resource.data.nombre_lote is string
+                    && request.resource.data.nombre_lote.size() > 0
+                    && request.resource.data.nombre_lote.size() <= 120
+                    && request.resource.data.area is number
+                    && request.resource.data.area > 0
+                    && request.resource.data.precio is number
+                    && request.resource.data.precio > 0
+                    && request.resource.data.tel is string
+                    && request.resource.data.tel.size() >= 7;
+    }
+  }
+}

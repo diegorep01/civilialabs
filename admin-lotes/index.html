@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin — LoteCheck | CivilIA Labs</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#1E3A5F;--teal:#14B8A6;--teal2:#0D9488;--bg:#F8FAFC;
+--borde:#E2E8F0;--texto:#0F172A;--muted:#64748B;--verde:#22C55E;--rojo:#EF4444;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);}
+header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:#fff;}
+.logo span{color:var(--teal);}
+.user-info{display:flex;align-items:center;gap:12px;}
+.user-email{font-size:13px;color:rgba(255,255,255,.6);}
+.btn-logout{padding:6px 14px;background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);border-radius:8px;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;}
+.btn-logout:hover{background:rgba(255,255,255,.1);}
+/* Login */
+#login-section{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px);}
+.login-card{background:#fff;border:1.5px solid var(--borde);border-radius:20px;padding:48px 40px;text-align:center;max-width:380px;width:90%;}
+.login-icon{font-size:48px;margin-bottom:16px;}
+.login-title{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.login-sub{font-size:14px;color:var(--muted);margin-bottom:28px;}
+.btn-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:13px;background:#fff;border:1.5px solid var(--borde);border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;color:var(--texto);font-family:'Inter',sans-serif;transition:all .2s;}
+.btn-google:hover{border-color:var(--teal);box-shadow:0 4px 16px rgba(20,184,166,.15);}
+.btn-google img{width:20px;}
+.login-warn{margin-top:16px;font-size:12px;color:var(--muted);}
+/* Panel */
+#admin-section{display:none;padding:28px 24px;}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.panel-title{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--navy);}
+.badge-count{background:var(--teal);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px;margin-left:10px;}
+.badge-aprobados{background:#15803d;color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px;margin-left:6px;}
+.tabs-admin{display:flex;gap:8px;margin-bottom:20px;}
+.tab-a{padding:8px 18px;border-radius:8px;border:1.5px solid var(--borde);background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:all .15s;}
+.tab-a.activo{background:var(--navy);border-color:var(--navy);color:#fff;}
+.lote-card{background:#fff;border:1.5px solid var(--borde);border-radius:12px;padding:20px;margin-bottom:14px;transition:border-color .2s;}
+.lote-card:hover{border-color:var(--teal);}
+.lc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.lc-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy);}
+.lc-lotiz{font-size:12px;color:var(--teal2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.lc-btns{display:flex;gap:8px;flex-shrink:0;}
+.btn-aprobar{padding:7px 18px;background:var(--verde);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;transition:opacity .2s;}
+.btn-rechazar{padding:7px 18px;background:var(--rojo);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;transition:opacity .2s;}
+.btn-aprobar:hover,.btn-rechazar:hover{opacity:.85;}
+.btn-aprobar:disabled,.btn-rechazar:disabled{opacity:.5;cursor:not-allowed;}
+.lc-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.meta-item{font-size:12px;color:var(--muted);background:var(--bg);padding:4px 10px;border-radius:6px;}
+.meta-item b{color:var(--texto);}
+.lc-desc{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.5;white-space:pre-wrap;}
+.lc-contacto{margin-top:10px;padding:10px;background:#f0fdf4;border-radius:8px;border:1px solid #86efac;}
+.lc-contacto b{color:#15803d;}
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty .icon{font-size:48px;margin-bottom:12px;}
+.loader{text-align:center;padding:40px;color:var(--muted);}
+.estado-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-left:8px;}
+.estado-pendiente{background:#fef3c7;color:#92400e;}
+.estado-aprobado{background:#d1fae5;color:#065f46;}
+.estado-rechazado{background:#fef2f2;color:#dc2626;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Lote<span>Check</span> <span style="font-size:12px;opacity:.5;font-weight:400">Admin</span></div>
+  <div class="user-info">
+    <span class="user-email" id="user-email"></span>
+    <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</header>
+
+<!-- LOGIN -->
+<section id="login-section">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <div class="login-title">Panel de administración</div>
+    <div class="login-sub">Inicia sesión con tu cuenta de Google para gestionar las publicaciones de lotes.</div>
+    <button class="btn-google" onclick="loginGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>
+      Continuar con Google
+    </button>
+    <div class="login-warn" id="login-warn"></div>
+  </div>
+</section>
+
+<!-- PANEL ADMIN -->
+<section id="admin-section">
+  <div class="panel-header">
+    <div>
+      <span class="panel-title">Publicaciones</span>
+      <span class="badge-count" id="cnt-pendientes">0 pendientes</span>
+      <span class="badge-aprobados" id="cnt-aprobados">0 aprobados</span>
+    </div>
+    <button onclick="recargar()" style="padding:8px 16px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">↻ Actualizar</button>
+  </div>
+  <div class="tabs-admin">
+    <button class="tab-a activo" id="tab-pend" onclick="cambiarTab('pendiente')">Pendientes</button>
+    <button class="tab-a" id="tab-apro" onclick="cambiarTab('aprobado')">Aprobados</button>
+    <button class="tab-a" id="tab-rech" onclick="cambiarTab('rechazado')">Rechazados</button>
+  </div>
+  <div id="lista-lotes"><div class="loader">Cargando...</div></div>
+</section>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+/* ===== CONFIGURACIÓN FIREBASE — reemplaza con los valores de tu proyecto ===== */
+var FIREBASE_CFG={
+  apiKey:'REEMPLAZA_API_KEY',
+  authDomain:'REEMPLAZA_AUTH_DOMAIN',
+  projectId:'REEMPLAZA_PROJECT_ID',
+  storageBucket:'REEMPLAZA_STORAGE_BUCKET',
+  messagingSenderId:'REEMPLAZA_SENDER_ID',
+  appId:'REEMPLAZA_APP_ID'
+};
+var ADMIN_EMAIL='diegocisnerosherrera@gmail.com';
+/* =========================================================================== */
+
+firebase.initializeApp(FIREBASE_CFG);
+var db=firebase.firestore();
+var auth=firebase.auth();
+var tabActual='pendiente';
+
+auth.onAuthStateChanged(function(user){
+  if(user){
+    if(user.email!==ADMIN_EMAIL){
+      auth.signOut();
+      document.getElementById('login-warn').textContent='⚠ Acceso solo para el administrador.';
+      return;
+    }
+    document.getElementById('user-email').textContent=user.email;
+    document.getElementById('login-section').style.display='none';
+    document.getElementById('admin-section').style.display='block';
+    cargarPublicaciones();
+  }else{
+    document.getElementById('login-section').style.display='flex';
+    document.getElementById('admin-section').style.display='none';
+  }
+});
+
+function loginGoogle(){
+  var provider=new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(function(e){
+    document.getElementById('login-warn').textContent='Error: '+e.message;
+  });
+}
+function cerrarSesion(){auth.signOut();}
+
+function cambiarTab(tab){
+  tabActual=tab;
+  ['pendiente','aprobado','rechazado'].forEach(function(t){
+    document.getElementById('tab-'+t.slice(0,4)).classList.toggle('activo',t===tab);
+  });
+  cargarPublicaciones();
+}
+
+function cargarPublicaciones(){
+  document.getElementById('lista-lotes').innerHTML='<div class="loader">Cargando...</div>';
+  db.collection('publicaciones').where('estado','==',tabActual)
+    .orderBy('fecha','desc').limit(50).get()
+    .then(function(snap){
+      renderLotes(snap);
+      // contadores
+      db.collection('publicaciones').where('estado','==','pendiente').get().then(function(s){
+        document.getElementById('cnt-pendientes').textContent=s.size+' pendientes';
+      });
+      db.collection('publicaciones').where('estado','==','aprobado').get().then(function(s){
+        document.getElementById('cnt-aprobados').textContent=s.size+' aprobados';
+      });
+    })
+    .catch(function(e){
+      document.getElementById('lista-lotes').innerHTML='<div class="empty"><div class="icon">⚠</div>Error al cargar: '+e.message+'</div>';
+    });
+}
+
+function renderLotes(snap){
+  var el=document.getElementById('lista-lotes');
+  if(snap.empty){
+    el.innerHTML='<div class="empty"><div class="icon">📭</div>No hay publicaciones '+tabActual+'s.</div>';
+    return;
+  }
+  var html='';
+  snap.forEach(function(doc){
+    var d=doc.data();
+    var id=doc.id;
+    var fecha=d.fecha?new Date(d.fecha.seconds*1000).toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    var estadoBadge='<span class="estado-badge estado-'+d.estado+'">'+d.estado+'</span>';
+    html+='<div class="lote-card" id="card-'+id+'">';
+    html+='<div class="lc-top">';
+    html+='<div>';
+    html+='<div class="lc-lotiz">'+esc(d.lotiz||'')+'</div>';
+    html+='<div class="lc-title">'+esc(d.nombre_lote||'Sin nombre')+estadoBadge+'</div>';
+    html+='</div>';
+    if(d.estado==='pendiente'){
+      html+='<div class="lc-btns">';
+      html+='<button class="btn-aprobar" id="btn-ap-'+id+'" onclick="aprobar(\''+id+'\')">✓ Aprobar</button>';
+      html+='<button class="btn-rechazar" id="btn-re-'+id+'" onclick="rechazar(\''+id+'\')">✗ Rechazar</button>';
+      html+='</div>';
+    }
+    html+='</div>';
+    html+='<div class="lc-meta">';
+    html+='<div class="meta-item"><b>Área:</b> '+(d.area?d.area.toLocaleString()+' m²':'—')+'</div>';
+    html+='<div class="meta-item"><b>Precio:</b> S/ '+(d.precio?d.precio.toLocaleString():'—')+'</div>';
+    html+='<div class="meta-item"><b>S/m²:</b> '+(d.pm2?d.pm2.toLocaleString():'—')+'</div>';
+    html+='<div class="meta-item"><b>Distrito:</b> '+(d.distrito||'—')+'</div>';
+    html+='<div class="meta-item"><b>Fecha:</b> '+fecha+'</div>';
+    var sv=[];
+    if(d.agua)sv.push('💧 Agua');if(d.luz)sv.push('⚡ Luz');
+    if(d.desague)sv.push('🚿 Desagüe');if(d.titulo)sv.push('📄 Título');
+    if(sv.length) html+='<div class="meta-item">'+sv.join(' ')+'</div>';
+    html+='</div>';
+    if(d.desc) html+='<div class="lc-desc">'+esc(d.desc)+'</div>';
+    html+='<div class="lc-contacto"><b>Contacto:</b> '+esc(d.nombre_vendedor||'—')+' · 📞 '+esc(d.tel||'—')+(d.email?' · ✉ '+esc(d.email):'')+'</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function aprobar(id){
+  if(!confirm('¿Aprobar este lote y publicarlo en LoteCheck?')) return;
+  var ba=document.getElementById('btn-ap-'+id);
+  var br=document.getElementById('btn-re-'+id);
+  if(ba)ba.disabled=true; if(br)br.disabled=true;
+
+  db.collection('publicaciones').doc(id).get().then(function(doc){
+    var d=doc.data();
+    // 1. Copiar a colección 'lotes' (los que lotecheck.html lee desde Firebase)
+    return db.collection('lotes').add({
+      lotiz:d.lotiz,nombre_lote:d.nombre_lote,area:d.area,precio:d.precio,pm2:d.pm2,
+      agua:!!d.agua,luz:!!d.luz,desague:!!d.desague,titulo:!!d.titulo,
+      desc:d.desc||'',distrito:d.distrito||'',
+      nombre_vendedor:d.nombre_vendedor,tel:d.tel,
+      estado:'aprobado',id_publicacion:id,
+      fecha_aprobacion:firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      // 2. Actualizar estado de la publicación
+      return db.collection('publicaciones').doc(id).update({estado:'aprobado'});
+    });
+  }).then(function(){
+    var card=document.getElementById('card-'+id);
+    if(card){card.style.transition='opacity .4s';card.style.opacity='0';setTimeout(function(){cargarPublicaciones();},400);}
+  }).catch(function(e){
+    alert('Error: '+e.message);
+    if(ba)ba.disabled=false; if(br)br.disabled=false;
+  });
+}
+
+function rechazar(id){
+  if(!confirm('¿Rechazar y eliminar esta publicación?')) return;
+  db.collection('publicaciones').doc(id).update({estado:'rechazado'}).then(function(){
+    var card=document.getElementById('card-'+id);
+    if(card){card.style.opacity='0';setTimeout(function(){cargarPublicaciones();},400);}
+  }).catch(function(e){alert('Error: '+e.message);});
+}
+
+function recargar(){cargarPublicaciones();}
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

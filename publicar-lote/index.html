@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-W789C5WW');</script>
+<!-- End Google Tag Manager -->
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Publicar mi Lote — LoteCheck | CivilIA Labs</title>
+<meta name="description" content="Publica tu lote o terreno en venta gratis en LoteCheck. Llega a compradores reales en Tarapoto y San Martín. CivilIA Labs."/>
+<meta name="robots" content="index,follow"/>
+<link rel="canonical" href="https://civilialabs.com/publicar-lote/"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#1E3A5F;--navy2:#243d65;--teal:#14B8A6;--teal2:#0D9488;
+--bg:#F8FAFC;--card:#fff;--borde:#E2E8F0;--texto:#0F172A;--muted:#64748B;
+--verde:#22C55E;--rojo:#EF4444;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-height:100vh;}
+header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.logo-brand{font-family:'Sora',sans-serif;font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:2px;opacity:.7;}
+.logo-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#fff;}
+.logo-title span{color:var(--teal);}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
+.nav-link{color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.2);transition:all .2s;}
+.nav-link:hover{background:rgba(255,255,255,.1);color:#fff;}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);padding:52px 24px 44px;text-align:center;}
+.hero h1{font-family:'Sora',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#fff;margin-bottom:12px;}
+.hero h1 span{color:var(--teal);}
+.hero p{font-size:16px;color:rgba(255,255,255,.7);max-width:560px;margin:0 auto 28px;}
+.badge-gratis{display:inline-block;background:var(--teal);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.5px;margin-bottom:16px;}
+.pasos{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.paso{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 20px;display:flex;align-items:center;gap:10px;}
+.paso-n{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--teal);}
+.paso-txt{font-size:12px;color:rgba(255,255,255,.7);text-align:left;line-height:1.4;}
+.main{max-width:720px;margin:0 auto;padding:40px 20px 60px;}
+.card{background:var(--card);border:1.5px solid var(--borde);border-radius:16px;padding:32px;}
+.section-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--teal);}
+.form-grid{display:grid;gap:18px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:560px){.form-row{grid-template-columns:1fr;}}
+label{display:block;font-size:13px;font-weight:600;color:var(--texto);margin-bottom:6px;}
+label span{color:var(--rojo);}
+.hint{font-size:11px;color:var(--muted);margin-top:3px;}
+input[type=text],input[type=number],input[type=tel],input[type=email],select,textarea{
+  width:100%;padding:10px 13px;border:1.5px solid var(--borde);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--texto);background:#fff;
+  transition:border-color .2s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.1);}
+textarea{min-height:90px;resize:vertical;line-height:1.5;}
+.checks-row{display:flex;flex-wrap:wrap;gap:10px;}
+.check-item{display:flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--borde);border-radius:8px;cursor:pointer;transition:all .15s;user-select:none;}
+.check-item input[type=checkbox]{display:none;}
+.check-item.activo{background:rgba(20,184,166,.1);border-color:var(--teal);}
+.check-item .icon{font-size:16px;}
+.check-item .lbl{font-size:13px;font-weight:500;color:var(--muted);}
+.check-item.activo .lbl{color:var(--teal2);}
+.divider{border:none;border-top:1.5px solid var(--borde);margin:28px 0;}
+.btn-enviar{width:100%;padding:15px;background:var(--teal);color:#fff;border:none;
+  border-radius:10px;font-family:'Sora',sans-serif;font-size:17px;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.btn-enviar:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(20,184,166,.3);}
+.btn-enviar:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.alerta{padding:12px 16px;border-radius:8px;font-size:13px;font-weight:500;margin-bottom:18px;display:none;}
+.alerta.error{background:#fef2f2;border:1px solid #fca5a5;color:#dc2626;}
+.alerta.ok{background:#f0fdf4;border:1px solid #86efac;color:#15803d;}
+/* Modal éxito */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;}
+.modal-ov.v{display:flex;}
+.modal-box{background:#fff;border-radius:20px;padding:40px 32px;max-width:420px;width:90%;text-align:center;animation:popIn .3s ease;}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-icon{font-size:52px;margin-bottom:16px;}
+.modal-title{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:10px;}
+.modal-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
+.modal-btn{display:inline-block;padding:12px 28px;background:var(--teal);color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-family:'Sora',sans-serif;font-size:15px;}
+/* Honeypot */
+#pub-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;pointer-events:none;}
+</style>
+</head>
+<body>
+<!-- GTM noscript -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W789C5WW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<header>
+  <div>
+    <div class="logo-brand">CivilIA Labs</div>
+    <div class="logo-title">Lote<span>Check</span></div>
+    <div class="logo-sub">Publica tu terreno gratis</div>
+  </div>
+  <a href="https://civilialabs.com/lotecheck/" class="nav-link">← Ver lotes</a>
+</header>
+
+<section class="hero">
+  <span class="badge-gratis">✓ Publicación 100% gratuita</span>
+  <h1>Publica tu <span>lote o terreno</span><br/>y llega a compradores reales</h1>
+  <p>Llena el formulario y en menos de 48 horas tu lote aparecerá en LoteCheck, el directorio más completo de Tarapoto y San Martín.</p>
+  <div class="pasos">
+    <div class="paso"><div class="paso-n">1</div><div class="paso-txt">Completa el<br/>formulario</div></div>
+    <div class="paso"><div class="paso-n">2</div><div class="paso-txt">Revisamos<br/>tu lote</div></div>
+    <div class="paso"><div class="paso-n">3</div><div class="paso-txt">Aparece en<br/>LoteCheck</div></div>
+  </div>
+</section>
+
+<main class="main">
+  <div class="card">
+    <div id="alerta-form" class="alerta error"></div>
+
+    <div class="section-title">📍 Datos del terreno</div>
+    <div class="form-grid">
+
+      <div>
+        <label>Lotización o urbanización <span>*</span></label>
+        <input id="f-lotiz" type="text" placeholder="Ej: Las Terrazas de Morales, La Florencia..."/>
+        <div class="hint">Escribe el nombre del proyecto o urbanización</div>
+      </div>
+
+      <div>
+        <label>Nombre / referencia del lote <span>*</span></label>
+        <input id="f-lot" type="text" placeholder="Ej: Lote 15 Manzana C, Calle Los Pinos 210..."/>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label>Área (m²) <span>*</span></label>
+          <input id="f-area" type="number" min="1" step="0.01" placeholder="Ej: 300"/>
+        </div>
+        <div>
+          <label>Precio (S/) <span>*</span></label>
+          <input id="f-precio" type="number" min="1" step="1" placeholder="Ej: 45000"/>
+        </div>
+      </div>
+
+      <div>
+        <label>Distrito / Ubicación aproximada</label>
+        <select id="f-distrito">
+          <option value="">Selecciona el distrito</option>
+          <option>Tarapoto</option>
+          <option>Morales</option>
+          <option>La Banda de Shilcayo</option>
+          <option>Juan Guerra</option>
+          <option>Cacatachi</option>
+          <option>Shapaja</option>
+          <option>Chazuta</option>
+          <option>Otro en San Martín</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Descripción del terreno</label>
+        <textarea id="f-desc" placeholder="Escribe los detalles más importantes: acceso, topografía, vecindario, estado del título, facilidades de pago..."></textarea>
+      </div>
+
+      <div>
+        <label>Servicios disponibles</label>
+        <div class="checks-row" id="checks-servicios">
+          <label class="check-item" id="ck-agua"><input type="checkbox" id="cb-agua"/><span class="icon">💧</span><span class="lbl">Agua</span></label>
+          <label class="check-item" id="ck-luz"><input type="checkbox" id="cb-luz"/><span class="icon">⚡</span><span class="lbl">Luz</span></label>
+          <label class="check-item" id="ck-desague"><input type="checkbox" id="cb-desague"/><span class="icon">🚿</span><span class="lbl">Desagüe</span></label>
+          <label class="check-item" id="ck-titulo"><input type="checkbox" id="cb-titulo"/><span class="icon">📄</span><span class="lbl">Título de propiedad</span></label>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="divider"/>
+    <div class="section-title">👤 Tus datos de contacto</div>
+    <div class="form-grid">
+
+      <div class="form-row">
+        <div>
+          <label>Tu nombre completo <span>*</span></label>
+          <input id="f-nombre" type="text" placeholder="Ej: Juan Pérez García"/>
+        </div>
+        <div>
+          <label>Teléfono / WhatsApp <span>*</span></label>
+          <input id="f-tel" type="tel" placeholder="Ej: 942 123 456"/>
+        </div>
+      </div>
+
+      <div>
+        <label>Email (opcional)</label>
+        <input id="f-email" type="email" placeholder="Ej: juan@ejemplo.com"/>
+        <div class="hint">Solo para confirmación, no se publicará</div>
+      </div>
+
+    </div>
+
+    <!-- Honeypot -->
+    <input id="pub-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+
+    <hr class="divider"/>
+    <button class="btn-enviar" id="btn-pub" onclick="enviarPublicacion()">Publicar mi lote gratis →</button>
+    <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">Al publicar aceptas que CivilIA Labs muestre tus datos de contacto a potenciales compradores.</p>
+  </div>
+</main>
+
+<!-- Modal éxito -->
+<div class="modal-ov" id="modal-ok">
+  <div class="modal-box">
+    <div class="modal-icon">🎉</div>
+    <div class="modal-title">¡Lote enviado!</div>
+    <div class="modal-sub">Revisaremos tu publicación en menos de 48 horas. Una vez aprobada, tu lote aparecerá en LoteCheck y llegará a los compradores activos de la zona.</div>
+    <a href="https://civilialabs.com/lotecheck/" class="modal-btn">Ver LoteCheck →</a>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+/* ===== CONFIGURACIÓN FIREBASE — reemplaza con los valores de tu proyecto ===== */
+var FIREBASE_CFG={
+  apiKey:'REEMPLAZA_API_KEY',
+  authDomain:'REEMPLAZA_AUTH_DOMAIN',
+  projectId:'REEMPLAZA_PROJECT_ID',
+  storageBucket:'REEMPLAZA_STORAGE_BUCKET',
+  messagingSenderId:'REEMPLAZA_SENDER_ID',
+  appId:'REEMPLAZA_APP_ID'
+};
+/* =========================================================================== */
+
+var db;
+try{
+  firebase.initializeApp(FIREBASE_CFG);
+  db=firebase.firestore();
+}catch(e){}
+
+// Toggles de servicios
+['agua','luz','desague','titulo'].forEach(function(s){
+  var ck=document.getElementById('ck-'+s);
+  var cb=document.getElementById('cb-'+s);
+  ck.addEventListener('click',function(){
+    cb.checked=!cb.checked;
+    ck.classList.toggle('activo',cb.checked);
+  });
+});
+
+function mostrarAlerta(msg,tipo){
+  var el=document.getElementById('alerta-form');
+  el.textContent=msg; el.className='alerta '+(tipo||'error'); el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function ocultarAlerta(){document.getElementById('alerta-form').style.display='none';}
+
+function enviarPublicacion(){
+  // Honeypot
+  if(document.getElementById('pub-hp').value){
+    document.getElementById('modal-ok').classList.add('v');
+    return;
+  }
+
+  var lotiz=document.getElementById('f-lotiz').value.trim();
+  var lot=document.getElementById('f-lot').value.trim();
+  var area=parseFloat(document.getElementById('f-area').value);
+  var precio=parseFloat(document.getElementById('f-precio').value);
+  var nombre=document.getElementById('f-nombre').value.trim();
+  var tel=document.getElementById('f-tel').value.trim().replace(/\s+/g,'');
+  var email=document.getElementById('f-email').value.trim();
+  var desc=document.getElementById('f-desc').value.trim();
+  var distrito=document.getElementById('f-distrito').value;
+
+  ocultarAlerta();
+
+  if(!lotiz){mostrarAlerta('Escribe el nombre de la lotización o urbanización.');return;}
+  if(!lot){mostrarAlerta('Escribe el nombre o referencia del lote.');return;}
+  if(!area||area<=0){mostrarAlerta('Ingresa el área del lote en m².');return;}
+  if(!precio||precio<=0){mostrarAlerta('Ingresa el precio de venta en soles.');return;}
+  if(!nombre){mostrarAlerta('Escribe tu nombre completo.');return;}
+  if(!tel||tel.length<7){mostrarAlerta('Ingresa un número de teléfono válido.');return;}
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){mostrarAlerta('El email no parece válido.');return;}
+
+  if(!db){mostrarAlerta('Error de conexión. Intenta de nuevo en unos segundos.');return;}
+
+  var btn=document.getElementById('btn-pub');
+  btn.disabled=true; btn.textContent='Enviando...';
+
+  var doc={
+    lotiz:lotiz,nombre_lote:lot,area:area,precio:precio,
+    pm2:Math.round(precio/area),
+    agua:document.getElementById('cb-agua').checked,
+    luz:document.getElementById('cb-luz').checked,
+    desague:document.getElementById('cb-desague').checked,
+    titulo:document.getElementById('cb-titulo').checked,
+    desc:desc,distrito:distrito,
+    nombre_vendedor:nombre,tel:tel,
+    email:email||null,
+    estado:'pendiente',
+    fecha:firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  db.collection('publicaciones').add(doc).then(function(){
+    dataLayer.push({event:'lote_publicado',lotiz:lotiz,area:area,precio:precio});
+    document.getElementById('modal-ok').classList.add('v');
+  }).catch(function(err){
+    btn.disabled=false; btn.textContent='Publicar mi lote gratis →';
+    mostrarAlerta('Error al enviar: '+err.message+'. Intenta de nuevo.');
+  });
+}
+</script>
+</body>
+</html>
