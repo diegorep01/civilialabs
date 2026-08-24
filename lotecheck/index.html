@@ -493,6 +493,7 @@ function setVista(v){
   document.getElementById('lista-container').style.display=v==='lista'?'block':'none';
   document.getElementById('mapa-container').style.display=v==='mapa'?'block':'none';
   if(v==='mapa') iniciarMapa();
+  else if(v==='lista') renderCards();
 }
 document.querySelectorAll('.chip-check').forEach(el=>{
   el.addEventListener('click',e=>{e.preventDefault();el.classList.toggle('activo');aplicarFiltros();});
@@ -521,7 +522,7 @@ function aplicarFiltros(){
   const buscar=document.getElementById('inp-buscar').value.toLowerCase().trim();
   const orden=document.getElementById('sel-orden').value;
   lotesFiltrados=LOTES.filter(l=>{
-    if(l.precio<pMin||l.precio>pMax) return false;
+    if(l.precio>0&&(l.precio<pMin||l.precio>pMax)) return false;
     if(l.area&&(l.area<aMin||l.area>aMax)) return false;
     if(fAgua&&!l.agua) return false;
     if(fLuz&&!l.luz) return false;
