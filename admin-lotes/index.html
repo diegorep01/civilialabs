@@ -126,6 +126,11 @@ var db=firebase.firestore();
 var auth=firebase.auth();
 var tabActual='pendiente';
 
+// Capturar resultado del redirect al volver de Google
+auth.getRedirectResult().catch(function(e){
+  document.getElementById('login-warn').textContent='Error al iniciar sesión: '+e.message;
+});
+
 auth.onAuthStateChanged(function(user){
   if(user){
     if(user.email!==ADMIN_EMAIL){
@@ -145,9 +150,7 @@ auth.onAuthStateChanged(function(user){
 
 function loginGoogle(){
   var provider=new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(function(e){
-    document.getElementById('login-warn').textContent='Error: '+e.message;
-  });
+  auth.signInWithRedirect(provider);
 }
 function cerrarSesion(){auth.signOut();}
 
