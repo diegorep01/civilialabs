@@ -15,6 +15,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="robots" content="index,follow"/>
 <link rel="canonical" href="https://civilialabs.com/publicar-lote/"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--navy:#1E3A5F;--navy2:#243d65;--teal:#14B8A6;--teal2:#0D9488;
 --bg:#F8FAFC;--card:#fff;--borde:#E2E8F0;--texto:#0F172A;--muted:#64748B;
@@ -77,6 +79,15 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
 .modal-title{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:10px;}
 .modal-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
 .modal-btn{display:inline-block;padding:12px 28px;background:var(--teal);color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-family:'Sora',sans-serif;font-size:15px;}
+/* Mapa ubicación */
+#mapa-ubic{height:240px;border-radius:10px;border:1.5px solid var(--borde);margin-top:4px;z-index:1;}
+.mapa-hint{font-size:11px;color:var(--muted);margin-top:5px;text-align:center;}
+.pin-ok{font-size:12px;color:var(--teal2);font-weight:600;margin-top:5px;text-align:center;display:none;}
+/* Barra de progreso */
+#barra-wrap{display:none;padding:12px 16px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;margin-bottom:14px;}
+.barra-head{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#15803d;margin-bottom:7px;}
+.barra-track{height:8px;background:#dcfce7;border-radius:4px;overflow:hidden;}
+.barra-fill{height:100%;background:var(--verde);border-radius:4px;width:0%;transition:width .35s ease;}
 /* Fotos */
 .foto-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;}
 .foto-slot{position:relative;height:110px;}
@@ -148,19 +159,34 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
         </div>
       </div>
 
+      <div class="form-row">
+        <div>
+          <label>Departamento <span>*</span></label>
+          <select id="f-depto" onchange="centrarDepto()">
+            <option value="">Selecciona el departamento</option>
+            <option>Amazonas</option><option>Áncash</option><option>Apurímac</option>
+            <option>Arequipa</option><option>Ayacucho</option><option>Cajamarca</option>
+            <option>Callao</option><option>Cusco</option><option>Huancavelica</option>
+            <option>Huánuco</option><option>Ica</option><option>Junín</option>
+            <option>La Libertad</option><option>Lambayeque</option><option>Lima</option>
+            <option>Loreto</option><option>Madre de Dios</option><option>Moquegua</option>
+            <option>Pasco</option><option>Piura</option><option>Puno</option>
+            <option>San Martín</option><option>Tacna</option><option>Tumbes</option>
+            <option>Ucayali</option>
+          </select>
+        </div>
+        <div>
+          <label>Ciudad / zona de referencia</label>
+          <input id="f-ciudad" type="text" placeholder="Ej: Tarapoto, Morales, Huancayo..."/>
+          <div class="hint">Nombre de ciudad o zona</div>
+        </div>
+      </div>
+
       <div>
-        <label>Distrito / Ubicación aproximada</label>
-        <select id="f-distrito">
-          <option value="">Selecciona el distrito</option>
-          <option>Tarapoto</option>
-          <option>Morales</option>
-          <option>La Banda de Shilcayo</option>
-          <option>Juan Guerra</option>
-          <option>Cacatachi</option>
-          <option>Shapaja</option>
-          <option>Chazuta</option>
-          <option>Otro en San Martín</option>
-        </select>
+        <label>Ubica tu lote en el mapa <span style="font-size:11px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(haz clic en la posición aproximada)</span></label>
+        <div id="mapa-ubic"></div>
+        <div class="mapa-hint" id="mapa-hint">Selecciona primero el departamento, luego haz clic en el mapa</div>
+        <div class="pin-ok" id="pin-ok">📍 Ubicación marcada correctamente</div>
       </div>
 
       <div>
@@ -231,6 +257,10 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
     <p class="hint" style="margin-bottom:0;">Imágenes del terreno, fachada o área. Hasta 5 MB por foto. Se comprimen automáticamente.</p>
 
     <hr class="divider"/>
+    <div id="barra-wrap">
+      <div class="barra-head"><span id="barra-txt">Subiendo fotos...</span><span id="barra-pct">0%</span></div>
+      <div class="barra-track"><div class="barra-fill" id="barra-fill"></div></div>
+    </div>
     <button class="btn-enviar" id="btn-pub" onclick="enviarPublicacion()">Publicar mi lote gratis →</button>
     <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">Al publicar aceptas que CivilIA Labs muestre tus datos de contacto a potenciales compradores.</p>
   </div>
@@ -269,6 +299,8 @@ try{
   storage=firebase.storage();
 }catch(e){}
 
+// Inicializar mapa con delay para no bloquear render inicial
+setTimeout(initMapaUbic, 600);
 // Toggles de servicios
 ['agua','luz','desague','titulo'].forEach(function(s){
   var ck=document.getElementById('ck-'+s);
@@ -279,6 +311,46 @@ try{
   });
 });
 
+/* ── MAPA DE UBICACIÓN ── */
+var mapaUbic=null,marcadorUbic=null,latUbic=null,lonUbic=null;
+var DEPTOS={
+  'Amazonas':[-5.5,-77.9,8],'Áncash':[-9.5,-77.7,8],'Apurímac':[-14.0,-73.0,8],
+  'Arequipa':[-16.4,-71.5,8],'Ayacucho':[-13.2,-74.2,8],'Cajamarca':[-7.1,-78.5,8],
+  'Callao':[-12.1,-77.1,12],'Cusco':[-13.5,-72.0,8],'Huancavelica':[-12.8,-75.2,8],
+  'Huánuco':[-9.9,-76.2,8],'Ica':[-14.1,-75.7,8],'Junín':[-11.9,-75.0,8],
+  'La Libertad':[-8.1,-78.6,8],'Lambayeque':[-6.7,-79.9,8],'Lima':[-12.1,-77.0,9],
+  'Loreto':[-4.0,-76.0,7],'Madre de Dios':[-12.6,-70.1,7],'Moquegua':[-17.2,-70.9,9],
+  'Pasco':[-10.7,-75.2,8],'Piura':[-5.2,-80.6,8],'Puno':[-15.8,-70.0,8],
+  'San Martín':[-6.5,-76.4,9],'Tacna':[-18.0,-70.2,9],'Tumbes':[-3.6,-80.4,9],
+  'Ucayali':[-9.0,-73.5,7]
+};
+function initMapaUbic(){
+  if(mapaUbic) return;
+  mapaUbic=L.map('mapa-ubic').setView([-9.19,-75.0],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(mapaUbic);
+  mapaUbic.on('click',function(e){
+    latUbic=parseFloat(e.latlng.lat.toFixed(6));
+    lonUbic=parseFloat(e.latlng.lng.toFixed(6));
+    if(marcadorUbic) mapaUbic.removeLayer(marcadorUbic);
+    marcadorUbic=L.marker([latUbic,lonUbic]).addTo(mapaUbic)
+      .bindPopup('Tu lote está aquí').openPopup();
+    document.getElementById('pin-ok').style.display='block';
+    document.getElementById('mapa-hint').style.display='none';
+  });
+}
+function centrarDepto(){
+  var d=document.getElementById('f-depto').value;
+  initMapaUbic();
+  if(DEPTOS[d]) mapaUbic.setView([DEPTOS[d][0],DEPTOS[d][1]],DEPTOS[d][2]);
+}
+/* ── BARRA DE PROGRESO ── */
+function setProgreso(pct,txt){
+  document.getElementById('barra-wrap').style.display='block';
+  document.getElementById('barra-fill').style.width=pct+'%';
+  document.getElementById('barra-txt').textContent=txt;
+  document.getElementById('barra-pct').textContent=Math.round(pct)+'%';
+}
+/* ── FOTOS ── */
 function previsualizarFoto(i){
   var input=document.getElementById('foto-'+i);
   var img=document.getElementById('foto-prev-'+i);
@@ -314,19 +386,32 @@ function comprimirImagen(file){
   });
 }
 function subirFotos(tempId){
-  var proms=[];
+  var archivos=[];
   for(var i=0;i<3;i++){
-    var input=document.getElementById('foto-'+i);
-    if(input&&input.files[0]){
-      proms.push((function(idx,file){
-        return comprimirImagen(file).then(function(blob){
-          var ref=storage.ref('lotes/'+tempId+'/foto_'+(idx+1)+'.jpg');
-          return ref.put(blob,{contentType:'image/jpeg'}).then(function(){return ref.getDownloadURL();});
-        });
-      })(i,input.files[0]));
-    }
+    var inp=document.getElementById('foto-'+i);
+    if(inp&&inp.files[0]) archivos.push({idx:i,file:inp.files[0]});
   }
-  return Promise.all(proms);
+  if(!archivos.length) return Promise.resolve([]);
+  var urls=[]; var total=archivos.length;
+  function subirUna(i){
+    if(i>=total) return Promise.resolve(urls);
+    var item=archivos[i];
+    var pBase=(i/total)*88; var pFin=((i+1)/total)*88;
+    setProgreso(pBase,'Comprimiendo foto '+(i+1)+' de '+total+'...');
+    return comprimirImagen(item.file).then(function(blob){
+      var ref=storage.ref('lotes/'+tempId+'/foto_'+(item.idx+1)+'.jpg');
+      var task=ref.put(blob,{contentType:'image/jpeg'});
+      return new Promise(function(resolve,reject){
+        task.on('state_changed',function(snap){
+          var p=pBase+4+(snap.bytesTransferred/snap.totalBytes)*(pFin-pBase-4);
+          setProgreso(p,'Subiendo foto '+(i+1)+' de '+total+'...');
+        },reject,function(){
+          ref.getDownloadURL().then(function(url){urls.push(url);resolve();});
+        });
+      });
+    }).then(function(){return subirUna(i+1);});
+  }
+  return subirUna(0);
 }
 function mostrarAlerta(msg,tipo){
   var el=document.getElementById('alerta-form');
@@ -350,7 +435,8 @@ function enviarPublicacion(){
   var tel=document.getElementById('f-tel').value.trim().replace(/\s+/g,'');
   var email=document.getElementById('f-email').value.trim();
   var desc=document.getElementById('f-desc').value.trim();
-  var distrito=document.getElementById('f-distrito').value;
+  var depto=document.getElementById('f-depto').value;
+  var ciudad=document.getElementById('f-ciudad').value.trim();
 
   ocultarAlerta();
 
@@ -358,6 +444,7 @@ function enviarPublicacion(){
   if(!lot){mostrarAlerta('Escribe el nombre o referencia del lote.');return;}
   if(!area||area<=0){mostrarAlerta('Ingresa el área del lote en m².');return;}
   if(!precio||precio<=0){mostrarAlerta('Ingresa el precio de venta en soles.');return;}
+  if(!depto){mostrarAlerta('Selecciona el departamento de tu lote.');return;}
   if(!nombre){mostrarAlerta('Escribe tu nombre completo.');return;}
   if(!tel||tel.length<7){mostrarAlerta('Ingresa un número de teléfono válido.');return;}
   if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){mostrarAlerta('El email no parece válido.');return;}
@@ -369,6 +456,7 @@ function enviarPublicacion(){
 
   var hayFotos=false;
   for(var i=0;i<3;i++){var inp=document.getElementById('foto-'+i);if(inp&&inp.files[0]){hayFotos=true;break;}}
+  if(hayFotos) setProgreso(0,'Preparando fotos...');
   btn.textContent=hayFotos?'Subiendo fotos...':'Enviando publicación...';
 
   var tempId=Math.random().toString(36).slice(2)+Date.now().toString(36);
@@ -382,7 +470,8 @@ function enviarPublicacion(){
       luz:document.getElementById('cb-luz').checked,
       desague:document.getElementById('cb-desague').checked,
       titulo:document.getElementById('cb-titulo').checked,
-      desc:desc,distrito:distrito,
+      desc:desc,departamento:depto,ciudad:ciudad,
+      lat:latUbic,lon:lonUbic,
       nombre_vendedor:nombre,tel:tel,
       email:email||null,
       fotos:fotoUrls,
@@ -391,9 +480,11 @@ function enviarPublicacion(){
     };
     return db.collection('publicaciones').add(doc);
   }).then(function(){
+    setProgreso(100,'¡Lote publicado!');
     dataLayer.push({event:'lote_publicado',lotiz:lotiz,area:area,precio:precio});
-    document.getElementById('modal-ok').classList.add('v');
+    setTimeout(function(){document.getElementById('modal-ok').classList.add('v');},400);
   }).catch(function(err){
+    document.getElementById('barra-wrap').style.display='none';
     btn.disabled=false; btn.textContent='Publicar mi lote gratis →';
     mostrarAlerta('Error al enviar: '+err.message+'. Intenta de nuevo.');
   });

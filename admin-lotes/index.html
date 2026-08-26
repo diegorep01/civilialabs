@@ -221,7 +221,9 @@ function renderLotes(snap){
     html+='<div class="meta-item"><b>Área:</b> '+(d.area?d.area.toLocaleString()+' m²':'—')+'</div>';
     html+='<div class="meta-item"><b>Precio:</b> S/ '+(d.precio?d.precio.toLocaleString():'—')+'</div>';
     html+='<div class="meta-item"><b>S/m²:</b> '+(d.pm2?d.pm2.toLocaleString():'—')+'</div>';
-    html+='<div class="meta-item"><b>Distrito:</b> '+(d.distrito||'—')+'</div>';
+    html+='<div class="meta-item"><b>Departamento:</b> '+(d.departamento||d.distrito||'—')+'</div>';
+    if(d.ciudad) html+='<div class="meta-item"><b>Ciudad:</b> '+esc(d.ciudad)+'</div>';
+    if(d.lat) html+='<div class="meta-item"><b>Coords:</b> '+d.lat.toFixed(4)+', '+d.lon.toFixed(4)+'</div>';
     html+='<div class="meta-item"><b>Fecha:</b> '+fecha+'</div>';
     var sv=[];
     if(d.agua)sv.push('💧 Agua');if(d.luz)sv.push('⚡ Luz');
