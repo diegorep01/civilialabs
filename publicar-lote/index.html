@@ -410,8 +410,11 @@ function subirFotos(tempId){
         task.on('state_changed',function(snap){
           var p=pBase+4+(snap.bytesTransferred/snap.totalBytes)*(pFin-pBase-4);
           setProgreso(p,'Subiendo foto '+(i+1)+' de '+total+'...');
-        },reject,function(){
-          ref.getDownloadURL().then(function(url){urls.push(url);resolve();});
+        },function(err){
+          console.error('[Storage] Error subiendo foto '+(i+1)+':', err.code, err.message);
+          reject(err);
+        },function(){
+          ref.getDownloadURL().then(function(url){urls.push(url);resolve();}).catch(reject);
         });
       });
     }).then(function(){return subirUna(i+1);});
@@ -454,7 +457,7 @@ function enviarPublicacion(){
   if(!tel||tel.length<7){mostrarAlerta('Ingresa un número de teléfono válido.');return;}
   if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){mostrarAlerta('El email no parece válido.');return;}
 
-  if(!db){mostrarAlerta('Error de conexión. Intenta de nuevo en unos segundos.');return;}
+  if(!db||!storage){mostrarAlerta('Error de conexión con Firebase. Recarga la página e intenta de nuevo (código: '+(db?'S-OK':'DB')+'/'+(storage?'ST-OK':'ST')+')');return;}
 
   var btn=document.getElementById('btn-pub');
   btn.disabled=true;
