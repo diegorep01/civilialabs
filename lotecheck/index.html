@@ -153,7 +153,7 @@ table.comp tr:last-child td{border-bottom:none;}
 .modal-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:9999;
   align-items:center;justify-content:center;}
 .modal-ov.v{display:flex;}
-.modal-box{background:#fff;border-radius:16px;padding:30px;width:90%;max-width:380px;
+.modal-box{background:#fff;border-radius:16px;padding:30px;width:90%;max-width:440px;
   box-shadow:0 20px 60px rgba(0,0,0,.3);}
 .modal-title{font-family:'Sora',sans-serif;font-size:19px;font-weight:700;color:var(--navy);margin-bottom:6px;}
 .modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
@@ -173,6 +173,20 @@ table.comp tr:last-child td{border-bottom:none;}
 .modal-submit:hover{background:var(--navy);}
 .modal-submit:disabled{background:var(--muted);cursor:default;}
 .modal-aviso{font-size:10px;color:var(--muted);text-align:center;}
+/* Foto thumbnail en card */
+.card-thumb{margin:-14px -14px 10px;border-radius:10px 10px 0 0;overflow:hidden;height:140px;flex-shrink:0;}
+.card-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+/* Carrusel fotos en modal */
+.car-wrap{margin:-30px -30px 18px;border-radius:16px 16px 0 0;overflow:hidden;position:relative;background:#111;}
+.car-wrap img{width:100%;height:210px;object-fit:cover;display:block;}
+.car-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);color:#fff;
+  border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;padding:0;transition:background .15s;}
+.car-nav:hover{background:rgba(0,0,0,.7);}
+#car-prev{left:8px;} #car-next{right:8px;}
+.car-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+.car-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);transition:background .15s;}
+.car-dot.a{background:#fff;}
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--borde);border-radius:4px;}
 
@@ -440,6 +454,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div class="modal-ov" id="modal-ov">
   <div class="modal-box">
+    <!-- Carrusel de fotos (solo si el lote tiene fotos) -->
+    <div class="car-wrap" id="car-wrap" style="display:none;">
+      <img id="car-img" src="" alt="Foto del lote"/>
+      <button class="car-nav" id="car-prev" onclick="navFoto(-1)">‹</button>
+      <button class="car-nav" id="car-next" onclick="navFoto(+1)">›</button>
+      <div class="car-dots" id="car-dots"></div>
+    </div>
     <!-- Estado 1: formulario -->
     <div id="modal-form-st">
       <div class="modal-title">📞 Ver contacto del vendedor</div>
@@ -576,6 +597,7 @@ function renderCards(){
   grid.innerHTML=vis.map(l=>`
 <div class="card${l.dest?' dest':''}" onclick="verEnMapa(${l.lat},${l.lon},${l.id})">
   ${l.dest?'<div class="badge-dest">⭐ Destacado</div>':''}
+  ${l.fotos&&l.fotos[0]?`<div class="card-thumb"><img src="${l.fotos[0]}" alt="" loading="lazy" onerror="this.parentNode.style.display='none'"/></div>`:''}
   <div class="card-lotiz">${l.lotiz}</div>
   <div class="card-nombre">${l.lot||'Lote disponible'}</div>
   <div class="card-precio">${fmt(l.precio)}</div>
@@ -753,6 +775,24 @@ function cerrarFiltrosMob(){
 }
 const APPS_URL='https://script.google.com/macros/s/AKfycbzlP3TKqjhoienKbwKoU5um4bowim5fF0Wy0LSRELFztIoEEflhwppEMhzg46SvlDU0bg/exec';
 let _loteActivo=null;
+let _fotosActivas=[],_fotoIdx=0;
+function cargarCarrusel(fotos){
+  const wrap=document.getElementById('car-wrap');
+  if(!fotos||!fotos.length){wrap.style.display='none';return;}
+  _fotosActivas=fotos; _fotoIdx=0;
+  wrap.style.display='block';
+  document.getElementById('car-img').src=fotos[0];
+  document.getElementById('car-prev').style.display=fotos.length>1?'flex':'none';
+  document.getElementById('car-next').style.display=fotos.length>1?'flex':'none';
+  const dots=document.getElementById('car-dots');
+  dots.innerHTML=fotos.map((_,i)=>`<div class="car-dot${i===0?' a':''}"></div>`).join('');
+}
+function navFoto(dir){
+  if(!_fotosActivas.length) return;
+  _fotoIdx=(_fotoIdx+dir+_fotosActivas.length)%_fotosActivas.length;
+  document.getElementById('car-img').src=_fotosActivas[_fotoIdx];
+  document.querySelectorAll('.car-dot').forEach((d,i)=>d.classList.toggle('a',i===_fotoIdx));
+}
 function mostrarContacto(id){
   _loteActivo=LOTES.find(x=>x.id===id); if(!_loteActivo) return;
   const sub=_loteActivo.lotiz+(_loteActivo.lot?' · '+_loteActivo.lot:'');
@@ -765,6 +805,7 @@ function mostrarContacto(id){
   document.getElementById('ml-ciudad').value='';
   const btn=document.getElementById('ml-btn');
   btn.disabled=false; btn.textContent='Ver numero de contacto →';
+  cargarCarrusel(_loteActivo.fotos||[]);
   document.getElementById('modal-ov').classList.add('v');
   dataLayer.push({event:'modal_abierto',herramienta:'LoteCheck'});
 }
@@ -861,6 +902,7 @@ actualizarLabels(); setVista('mapa'); aplicarFiltros();
             lon:d.lon||(-76.361+Math.random()*0.05-0.025),
             agua:!!d.agua,luz:!!d.luz,desague:!!d.desague,
             titulo:!!d.titulo,cont:d.nombre_vendedor||'',tel:d.tel||'',
+            fotos:d.fotos||[],
             arrozal:false,inundado:false,constr:false,constr_m2:0,
             desc:d.desc||'',dest:false
           });

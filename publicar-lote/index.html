@@ -77,6 +77,20 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
 .modal-title{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:10px;}
 .modal-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
 .modal-btn{display:inline-block;padding:12px 28px;background:var(--teal);color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-family:'Sora',sans-serif;font-size:15px;}
+/* Fotos */
+.foto-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;}
+.foto-slot{position:relative;height:110px;}
+.foto-slot input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;z-index:3;}
+.foto-lbl{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:110px;border:2px dashed var(--borde);border-radius:10px;
+  font-size:11px;color:var(--muted);gap:5px;transition:border-color .2s,color .2s;background:#fafafa;}
+.foto-lbl:hover{border-color:var(--teal);color:var(--teal);}
+.foto-lbl .ico{font-size:22px;}
+.foto-prev-img{width:100%;height:110px;object-fit:cover;border-radius:10px;
+  border:2px solid var(--teal);display:none;position:absolute;top:0;left:0;z-index:1;}
+.foto-del{position:absolute;top:5px;right:5px;z-index:4;width:22px;height:22px;
+  background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;cursor:pointer;
+  font-size:12px;display:none;align-items:center;justify-content:center;padding:0;line-height:1;}
 /* Honeypot */
 #pub-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;pointer-events:none;}
 </style>
@@ -193,6 +207,30 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
     <input id="pub-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"/>
 
     <hr class="divider"/>
+    <div class="section-title">📷 Fotos del terreno <span style="font-size:11px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(opcional · hasta 3)</span></div>
+    <div class="foto-slots">
+      <div class="foto-slot">
+        <input type="file" accept="image/*" id="foto-0" onchange="previsualizarFoto(0)"/>
+        <div class="foto-lbl" id="foto-lbl-0"><span class="ico">📷</span><span>Foto 1</span></div>
+        <img class="foto-prev-img" id="foto-prev-0" alt=""/>
+        <button class="foto-del" id="foto-del-0" type="button" onclick="eliminarFoto(0)">✕</button>
+      </div>
+      <div class="foto-slot">
+        <input type="file" accept="image/*" id="foto-1" onchange="previsualizarFoto(1)"/>
+        <div class="foto-lbl" id="foto-lbl-1"><span class="ico">📷</span><span>Foto 2</span></div>
+        <img class="foto-prev-img" id="foto-prev-1" alt=""/>
+        <button class="foto-del" id="foto-del-1" type="button" onclick="eliminarFoto(1)">✕</button>
+      </div>
+      <div class="foto-slot">
+        <input type="file" accept="image/*" id="foto-2" onchange="previsualizarFoto(2)"/>
+        <div class="foto-lbl" id="foto-lbl-2"><span class="ico">📷</span><span>Foto 3</span></div>
+        <img class="foto-prev-img" id="foto-prev-2" alt=""/>
+        <button class="foto-del" id="foto-del-2" type="button" onclick="eliminarFoto(2)">✕</button>
+      </div>
+    </div>
+    <p class="hint" style="margin-bottom:0;">Imágenes del terreno, fachada o área. Hasta 5 MB por foto. Se comprimen automáticamente.</p>
+
+    <hr class="divider"/>
     <button class="btn-enviar" id="btn-pub" onclick="enviarPublicacion()">Publicar mi lote gratis →</button>
     <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">Al publicar aceptas que CivilIA Labs muestre tus datos de contacto a potenciales compradores.</p>
   </div>
@@ -211,6 +249,7 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 <script>
 /* ===== CONFIGURACIÓN FIREBASE — reemplaza con los valores de tu proyecto ===== */
 var FIREBASE_CFG={
@@ -223,10 +262,11 @@ var FIREBASE_CFG={
 };
 /* =========================================================================== */
 
-var db;
+var db,storage;
 try{
   firebase.initializeApp(FIREBASE_CFG);
   db=firebase.firestore();
+  storage=firebase.storage();
 }catch(e){}
 
 // Toggles de servicios
@@ -239,6 +279,55 @@ try{
   });
 });
 
+function previsualizarFoto(i){
+  var input=document.getElementById('foto-'+i);
+  var img=document.getElementById('foto-prev-'+i);
+  var del=document.getElementById('foto-del-'+i);
+  var lbl=document.getElementById('foto-lbl-'+i);
+  if(input.files[0]){
+    if(input.files[0].size>5*1024*1024){alert('La foto '+( i+1)+' supera 5 MB. Elige una más pequeña.');input.value='';return;}
+    img.src=URL.createObjectURL(input.files[0]);
+    img.style.display='block'; del.style.display='flex'; lbl.style.display='none';
+  }
+}
+function eliminarFoto(i){
+  var input=document.getElementById('foto-'+i);
+  var img=document.getElementById('foto-prev-'+i);
+  var del=document.getElementById('foto-del-'+i);
+  var lbl=document.getElementById('foto-lbl-'+i);
+  input.value=''; img.src=''; img.style.display='none'; del.style.display='none'; lbl.style.display='flex';
+}
+function comprimirImagen(file){
+  return new Promise(function(resolve){
+    var img=new Image();
+    var url=URL.createObjectURL(file);
+    img.onload=function(){
+      var w=img.width,h=img.height,max=1400;
+      if(w>max||h>max){var r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r);}
+      var c=document.createElement('canvas');
+      c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      c.toBlob(function(b){resolve(b);},'image/jpeg',0.82);
+      URL.revokeObjectURL(url);
+    };
+    img.src=url;
+  });
+}
+function subirFotos(tempId){
+  var proms=[];
+  for(var i=0;i<3;i++){
+    var input=document.getElementById('foto-'+i);
+    if(input&&input.files[0]){
+      proms.push((function(idx,file){
+        return comprimirImagen(file).then(function(blob){
+          var ref=storage.ref('lotes/'+tempId+'/foto_'+(idx+1)+'.jpg');
+          return ref.put(blob,{contentType:'image/jpeg'}).then(function(){return ref.getDownloadURL();});
+        });
+      })(i,input.files[0]));
+    }
+  }
+  return Promise.all(proms);
+}
 function mostrarAlerta(msg,tipo){
   var el=document.getElementById('alerta-form');
   el.textContent=msg; el.className='alerta '+(tipo||'error'); el.style.display='block';
@@ -276,23 +365,32 @@ function enviarPublicacion(){
   if(!db){mostrarAlerta('Error de conexión. Intenta de nuevo en unos segundos.');return;}
 
   var btn=document.getElementById('btn-pub');
-  btn.disabled=true; btn.textContent='Enviando...';
+  btn.disabled=true;
 
-  var doc={
-    lotiz:lotiz,nombre_lote:lot,area:area,precio:precio,
-    pm2:Math.round(precio/area),
-    agua:document.getElementById('cb-agua').checked,
-    luz:document.getElementById('cb-luz').checked,
-    desague:document.getElementById('cb-desague').checked,
-    titulo:document.getElementById('cb-titulo').checked,
-    desc:desc,distrito:distrito,
-    nombre_vendedor:nombre,tel:tel,
-    email:email||null,
-    estado:'pendiente',
-    fecha:firebase.firestore.FieldValue.serverTimestamp()
-  };
+  var hayFotos=false;
+  for(var i=0;i<3;i++){var inp=document.getElementById('foto-'+i);if(inp&&inp.files[0]){hayFotos=true;break;}}
+  btn.textContent=hayFotos?'Subiendo fotos...':'Enviando publicación...';
 
-  db.collection('publicaciones').add(doc).then(function(){
+  var tempId=Math.random().toString(36).slice(2)+Date.now().toString(36);
+
+  subirFotos(tempId).then(function(fotoUrls){
+    btn.textContent='Guardando publicación...';
+    var doc={
+      lotiz:lotiz,nombre_lote:lot,area:area,precio:precio,
+      pm2:Math.round(precio/area),
+      agua:document.getElementById('cb-agua').checked,
+      luz:document.getElementById('cb-luz').checked,
+      desague:document.getElementById('cb-desague').checked,
+      titulo:document.getElementById('cb-titulo').checked,
+      desc:desc,distrito:distrito,
+      nombre_vendedor:nombre,tel:tel,
+      email:email||null,
+      fotos:fotoUrls,
+      estado:'pendiente',
+      fecha:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    return db.collection('publicaciones').add(doc);
+  }).then(function(){
     dataLayer.push({event:'lote_publicado',lotiz:lotiz,area:area,precio:precio});
     document.getElementById('modal-ok').classList.add('v');
   }).catch(function(err){

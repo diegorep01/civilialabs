@@ -60,6 +60,12 @@ header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;
 .estado-pendiente{background:#fef3c7;color:#92400e;}
 .estado-aprobado{background:#d1fae5;color:#065f46;}
 .estado-rechazado{background:#fef2f2;color:#dc2626;}
+.fotos-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.foto-thumb{width:90px;height:70px;object-fit:cover;border-radius:8px;border:1.5px solid var(--borde);cursor:pointer;transition:border-color .15s;}
+.foto-thumb:hover{border-color:var(--teal);}
+.foto-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;cursor:pointer;}
+.foto-lightbox.v{display:flex;}
+.foto-lightbox img{max-width:90vw;max-height:88vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5);}
 </style>
 </head>
 <body>
@@ -103,6 +109,11 @@ header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;
   </div>
   <div id="lista-lotes"><div class="loader">Cargando...</div></div>
 </section>
+
+<!-- Lightbox fotos -->
+<div class="foto-lightbox" id="foto-lightbox" onclick="this.classList.remove('v')">
+  <img id="foto-lb-img" src="" alt="Foto del lote"/>
+</div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -219,6 +230,11 @@ function renderLotes(snap){
     html+='</div>';
     if(d.desc) html+='<div class="lc-desc">'+esc(d.desc)+'</div>';
     html+='<div class="lc-contacto"><b>Contacto:</b> '+esc(d.nombre_vendedor||'—')+' · 📞 '+esc(d.tel||'—')+(d.email?' · ✉ '+esc(d.email):'')+'</div>';
+    if(d.fotos&&d.fotos.length){
+      html+='<div class="fotos-row">';
+      d.fotos.forEach(function(url){html+='<img class="foto-thumb" src="'+esc(url)+'" onclick="verFoto(\''+esc(url)+'\')" title="Ver foto a tamaño completo"/>';});
+      html+='</div>';
+    }
     html+='</div>';
   });
   el.innerHTML=html;
@@ -238,6 +254,7 @@ function aprobar(id){
       agua:!!d.agua,luz:!!d.luz,desague:!!d.desague,titulo:!!d.titulo,
       desc:d.desc||'',distrito:d.distrito||'',
       nombre_vendedor:d.nombre_vendedor,tel:d.tel,
+      fotos:d.fotos||[],
       estado:'aprobado',id_publicacion:id,
       fecha_aprobacion:firebase.firestore.FieldValue.serverTimestamp()
     }).then(function(){
@@ -265,6 +282,10 @@ function recargar(){cargarPublicaciones();}
 
 function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function verFoto(url){
+  document.getElementById('foto-lb-img').src=url;
+  document.getElementById('foto-lightbox').classList.add('v');
 }
 </script>
 </body>
