@@ -283,7 +283,6 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 <script>
 /* ===== CONFIGURACIÓN FIREBASE — reemplaza con los valores de tu proyecto ===== */
 var FIREBASE_CFG={
@@ -296,11 +295,10 @@ var FIREBASE_CFG={
 };
 /* =========================================================================== */
 
-var db,storage;
+var db;
 try{
   firebase.initializeApp(FIREBASE_CFG);
   db=firebase.firestore();
-  storage=firebase.storage();
 }catch(e){}
 
 // Inicializar mapa con delay para no bloquear render inicial
@@ -404,18 +402,18 @@ function subirFotos(tempId){
     setProgreso(pBase,'Procesando imagen '+(i+1)+' de '+total+'...');
     return comprimirImagen(item.file).then(function(blob){
       document.getElementById('barra-wrap').classList.add('subiendo');
-      var ref=storage.ref('lotes/'+tempId+'/foto_'+(item.idx+1)+'.jpg');
-      var task=ref.put(blob,{contentType:'image/jpeg'});
-      return new Promise(function(resolve,reject){
-        task.on('state_changed',function(snap){
-          var p=pBase+4+(snap.bytesTransferred/snap.totalBytes)*(pFin-pBase-4);
-          setProgreso(p,'Subiendo foto '+(i+1)+' de '+total+'...');
-        },function(err){
-          console.error('[Storage] Error subiendo foto '+(i+1)+':', err.code, err.message);
-          reject(err);
-        },function(){
-          ref.getDownloadURL().then(function(url){urls.push(url);resolve();}).catch(reject);
-        });
+      var fd=new FormData();
+      fd.append('file',blob,'foto_'+(item.idx+1)+'.jpg');
+      fd.append('upload_preset','lotecheck_unsigned');
+      fd.append('folder','lotecheck/'+tempId);
+      return fetch('https://api.cloudinary.com/v1_1/fzptmioy/image/upload',{
+        method:'POST',body:fd
+      }).then(function(r){
+        if(!r.ok) throw new Error('Cloudinary error '+r.status);
+        return r.json();
+      }).then(function(data){
+        setProgreso(pFin,'Foto '+(i+1)+' subida.');
+        urls.push(data.secure_url);
       });
     }).then(function(){return subirUna(i+1);});
   }
@@ -457,7 +455,7 @@ function enviarPublicacion(){
   if(!tel||tel.length<7){mostrarAlerta('Ingresa un número de teléfono válido.');return;}
   if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){mostrarAlerta('El email no parece válido.');return;}
 
-  if(!db||!storage){mostrarAlerta('Error de conexión con Firebase. Recarga la página e intenta de nuevo (código: '+(db?'S-OK':'DB')+'/'+(storage?'ST-OK':'ST')+')');return;}
+  if(!db){mostrarAlerta('Error de conexión con Firebase. Recarga la página e intenta de nuevo.');return;}
 
   var btn=document.getElementById('btn-pub');
   btn.disabled=true;
