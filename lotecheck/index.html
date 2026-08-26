@@ -174,11 +174,19 @@ table.comp tr:last-child td{border-bottom:none;}
 .modal-submit:disabled{background:var(--muted);cursor:default;}
 .modal-aviso{font-size:10px;color:var(--muted);text-align:center;}
 /* Foto thumbnail en card */
-.card-thumb{margin:-14px -14px 10px;border-radius:10px 10px 0 0;overflow:hidden;height:140px;flex-shrink:0;}
-.card-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.card-thumb{margin:-14px -14px 10px;border-radius:10px 10px 0 0;overflow:hidden;height:140px;flex-shrink:0;
+  background:linear-gradient(90deg,#E2E8F0 25%,#F1F5F9 50%,#E2E8F0 75%);background-size:200% 100%;
+  animation:sk 1.4s infinite;}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.card-thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s;}
 /* Carrusel fotos en modal */
-.car-wrap{margin:-30px -30px 18px;border-radius:16px 16px 0 0;overflow:hidden;position:relative;background:#111;}
-.car-wrap img{width:100%;height:210px;object-fit:cover;display:block;}
+.car-wrap{margin:-30px -30px 18px;border-radius:16px 16px 0 0;overflow:hidden;position:relative;
+  background:linear-gradient(90deg,#1E3A5F 0%,#243d65 100%);}
+.car-wrap img{width:100%;height:210px;object-fit:cover;display:block;opacity:0;transition:opacity .35s;}
+.car-spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.car-spinner::after{content:'';width:28px;height:28px;border:3px solid rgba(255,255,255,.25);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 .car-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);color:#fff;
   border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:18px;
   display:flex;align-items:center;justify-content:center;padding:0;transition:background .15s;}
@@ -456,7 +464,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="modal-box">
     <!-- Carrusel de fotos (solo si el lote tiene fotos) -->
     <div class="car-wrap" id="car-wrap" style="display:none;">
-      <img id="car-img" src="" alt="Foto del lote"/>
+      <div class="car-spinner" id="car-spinner"></div>
+      <img id="car-img" src="" alt="Foto del lote" onload="this.style.opacity='1';document.getElementById('car-spinner').style.display='none';" onerror="document.getElementById('car-wrap').style.display='none';"/>
       <button class="car-nav" id="car-prev" onclick="navFoto(-1)">‹</button>
       <button class="car-nav" id="car-next" onclick="navFoto(+1)">›</button>
       <div class="car-dots" id="car-dots"></div>
@@ -597,7 +606,7 @@ function renderCards(){
   grid.innerHTML=vis.map(l=>`
 <div class="card${l.dest?' dest':''}" onclick="verEnMapa(${l.lat},${l.lon},${l.id})">
   ${l.dest?'<div class="badge-dest">⭐ Destacado</div>':''}
-  ${l.fotos&&l.fotos[0]?`<div class="card-thumb"><img src="${l.fotos[0]}" alt="" loading="lazy" onerror="this.parentNode.style.display='none'"/></div>`:''}
+  ${l.fotos&&l.fotos[0]?`<div class="card-thumb"><img src="${l.fotos[0]}" alt="" loading="lazy" onload="this.style.opacity='1'" onerror="this.parentNode.style.display='none'"/></div>`:''}
   <div class="card-lotiz">${l.lotiz}</div>
   <div class="card-nombre">${l.lot||'Lote disponible'}</div>
   <div class="card-precio">${fmt(l.precio)}</div>
@@ -781,7 +790,10 @@ function cargarCarrusel(fotos){
   if(!fotos||!fotos.length){wrap.style.display='none';return;}
   _fotosActivas=fotos; _fotoIdx=0;
   wrap.style.display='block';
-  document.getElementById('car-img').src=fotos[0];
+  const img=document.getElementById('car-img');
+  const sp=document.getElementById('car-spinner');
+  img.style.opacity='0'; sp.style.display='flex';
+  img.src=fotos[0];
   document.getElementById('car-prev').style.display=fotos.length>1?'flex':'none';
   document.getElementById('car-next').style.display=fotos.length>1?'flex':'none';
   const dots=document.getElementById('car-dots');
@@ -790,7 +802,10 @@ function cargarCarrusel(fotos){
 function navFoto(dir){
   if(!_fotosActivas.length) return;
   _fotoIdx=(_fotoIdx+dir+_fotosActivas.length)%_fotosActivas.length;
-  document.getElementById('car-img').src=_fotosActivas[_fotoIdx];
+  const img=document.getElementById('car-img');
+  const sp=document.getElementById('car-spinner');
+  img.style.opacity='0'; sp.style.display='flex';
+  img.src=_fotosActivas[_fotoIdx];
   document.querySelectorAll('.car-dot').forEach((d,i)=>d.classList.toggle('a',i===_fotoIdx));
 }
 function mostrarContacto(id){

@@ -302,12 +302,12 @@ function comprimirImagen(file){
     var img=new Image();
     var url=URL.createObjectURL(file);
     img.onload=function(){
-      var w=img.width,h=img.height,max=1400;
+      var w=img.width,h=img.height,max=900;
       if(w>max||h>max){var r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r);}
       var c=document.createElement('canvas');
       c.width=w; c.height=h;
       c.getContext('2d').drawImage(img,0,0,w,h);
-      c.toBlob(function(b){resolve(b);},'image/jpeg',0.82);
+      c.toBlob(function(b){resolve(b);},'image/jpeg',0.70);
       URL.revokeObjectURL(url);
     };
     img.src=url;
