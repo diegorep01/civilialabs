@@ -406,7 +406,7 @@ function subirFotos(tempId){
       fd.append('file',blob,'foto_'+(item.idx+1)+'.jpg');
       fd.append('upload_preset','lotecheck_unsigned');
       fd.append('folder','lotecheck/'+tempId);
-      return fetch('https://api.cloudinary.com/v1_1/fzptmioy/image/upload',{
+      return fetch('https://api.cloudinary.com/v1_1/fzptmloy/image/upload',{
         method:'POST',body:fd
       }).then(function(r){
         if(!r.ok) throw new Error('Cloudinary error '+r.status);
