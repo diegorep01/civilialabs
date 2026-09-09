@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Página no encontrada | CivilIA Labs</title>
+<meta name="robots" content="noindex,follow"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1E3A5F;--teal:#14B8A6;--bg:#F8FAFC;--text:#0F172A;--muted:#64748B}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--navy);padding:.875rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
+.header-name{font-family:'Sora',sans-serif;font-size:.7rem;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.12em;text-transform:uppercase}
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1.5rem;text-align:center}
+.code{font-family:'Sora',sans-serif;font-size:6rem;font-weight:800;color:var(--teal);line-height:1;margin-bottom:1rem}
+h1{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;color:var(--navy);margin-bottom:.75rem}
+p{font-size:.9rem;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 2rem}
+.btn{display:inline-block;background:var(--teal);color:#fff;font-weight:700;font-size:.9rem;padding:.7rem 1.75rem;border-radius:24px;text-decoration:none;transition:background .15s}
+.btn:hover{background:#0D9488}
+footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:1rem;font-size:.75rem}
+footer a{color:var(--teal);text-decoration:none}
+</style>
+</head>
+<body>
+<header role="banner">
+  <span class="header-name">CivilIA Labs</span>
+</header>
+<main role="main">
+  <div class="code" aria-hidden="true">404</div>
+  <h1>Esta página no existe</h1>
+  <p>Es posible que la dirección esté mal escrita o que la página haya sido eliminada.</p>
+  <a href="/" class="btn">Ir al inicio</a>
+</main>
+<footer>
+  <strong>CivilIA Labs</strong> · <a href="/">Herramientas gratuitas para tu vivienda en Perú</a>
+</footer>
+<div id="cl-cookie" role="alertdialog" aria-label="Aviso de cookies" style="position:fixed;bottom:0;left:0;right:0;background:#0F172A;color:#CBD5E1;padding:.8rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;z-index:9999;font-family:Inter,sans-serif;font-size:.78rem;flex-wrap:wrap;box-shadow:0 -2px 12px rgba(0,0,0,.3)">
+  <p style="margin:0;flex:1">Usamos cookies de Google Analytics y Microsoft Clarity para mejorar nuestras herramientas. <a href="/privacidad/" style="color:#14B8A6;text-decoration:underline">Política de privacidad</a></p>
+  <button onclick="localStorage.setItem('cl_ok','1');document.getElementById('cl-cookie').remove()" style="background:#14B8A6;color:#0F172A;border:none;padding:.45rem 1.1rem;border-radius:20px;font-weight:700;cursor:pointer;font-size:.78rem;white-space:nowrap;font-family:inherit" aria-label="Aceptar el uso de cookies">Aceptar</button>
+</div>
+<script>if(localStorage.getItem('cl_ok'))document.getElementById('cl-cookie').remove();</script>
+</body>
+</html>

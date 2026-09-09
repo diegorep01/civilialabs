@@ -31,7 +31,7 @@ footer a{color:var(--teal);text-decoration:none}
 </head>
 <body>
 
-<header>
+<header role="banner">
   <a class="header-back" href="/">← Volver a CivilIA Labs</a>
   <span class="header-name">CivilIA Labs</span>
 </header>
@@ -85,8 +85,13 @@ footer a{color:var(--teal);text-decoration:none}
 </main>
 
 <footer>
-  <strong>CivilIA Labs</strong> · <a href="/">Herramientas gratuitas para tu vivienda en Perú</a>
+  <strong>CivilIA Labs</strong> · <a href="/">Herramientas gratuitas</a> · <a href="/terminos/">Términos</a>
 </footer>
 
+<div id="cl-cookie" role="alertdialog" aria-label="Aviso de cookies" style="position:fixed;bottom:0;left:0;right:0;background:#0F172A;color:#CBD5E1;padding:.8rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;z-index:9999;font-family:Inter,sans-serif;font-size:.78rem;flex-wrap:wrap;box-shadow:0 -2px 12px rgba(0,0,0,.3)">
+  <p style="margin:0;flex:1">Usamos cookies de Google Analytics y Microsoft Clarity para mejorar nuestras herramientas. <a href="/privacidad/" style="color:#14B8A6;text-decoration:underline">Política de privacidad</a></p>
+  <button onclick="localStorage.setItem('cl_ok','1');document.getElementById('cl-cookie').remove()" style="background:#14B8A6;color:#0F172A;border:none;padding:.45rem 1.1rem;border-radius:20px;font-weight:700;cursor:pointer;font-size:.78rem;white-space:nowrap;font-family:inherit" aria-label="Aceptar el uso de cookies">Aceptar</button>
+</div>
+<script>if(localStorage.getItem('cl_ok'))document.getElementById('cl-cookie').remove();</script>
 </body>
 </html>
