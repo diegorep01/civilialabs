@@ -39,27 +39,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);}
 
 /* HEADER */
-header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
-.logo-wrap{display:flex;flex-direction:column;}
-.logo-brand{font-family:'Sora',sans-serif;font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:2px;opacity:.7;}
-.logo-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#fff;}
-.logo-title span{color:var(--teal);}
-.logo-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
-.btn-publicar{
-  padding:9px 20px;background:var(--teal);color:#fff;border:none;border-radius:8px;
-  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;
-  text-decoration:none;white-space:nowrap;transition:background .15s;
-}
-.btn-publicar:hover{background:var(--teal2);}
+header{background:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--borde);flex-wrap:wrap;gap:10px;}
+.brand-wrap{display:flex;align-items:center;gap:9px;text-decoration:none;}
+.brand-wrap img{height:26px;width:auto;}
+.brand-name{font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:var(--navy);}
+.brand-name b{color:var(--teal);}
+.toolnav{display:flex;gap:7px;flex-wrap:wrap;}
+.toolnav a{font-size:12px;font-weight:600;color:var(--muted);padding:6px 12px;border-radius:20px;background:#F4F6F8;text-decoration:none;white-space:nowrap;}
+.toolnav a.act{background:var(--navy);color:#fff;}
 
-/* HERO COMPACTO */
+/* TITULO + CTA */
 .hero{
-  background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);
-  padding:32px 32px 40px;text-align:center;color:#fff;
+  max-width:1100px;margin:0 auto;padding:28px 24px 8px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
 }
-.hero h1{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:800;margin-bottom:8px;}
-.hero h1 span{color:var(--teal);}
-.hero p{font-size:14px;color:rgba(255,255,255,.7);max-width:520px;margin:0 auto;}
+.hero h1{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:var(--navy);}
+.hero p{font-size:13px;color:var(--muted);margin-top:6px;max-width:480px;}
+.hero-cta{border:1.5px solid var(--navy);color:var(--navy);font-weight:700;font-size:13px;padding:10px 18px;border-radius:9px;white-space:nowrap;background:none;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;}
+.hero-cta:hover{background:var(--navy);color:#fff;}
 
 /* FILTROS */
 .filtros-bar{
@@ -89,41 +86,28 @@ header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;
 
 /* CARD EMPRESA */
 .emp-card{
-  background:var(--card);border:1.5px solid var(--borde);border-radius:14px;
+  background:var(--card);border:1px solid var(--borde);border-radius:14px;
   overflow:hidden;transition:all .18s;cursor:pointer;position:relative;
 }
-.emp-card:hover{border-color:var(--teal);box-shadow:0 6px 24px rgba(20,184,166,.14);transform:translateY(-2px);}
+.emp-card:hover{border-color:var(--teal);box-shadow:0 6px 24px rgba(20,184,166,.10);transform:translateY(-2px);}
 .emp-card.destacada{border-color:var(--gold);}
 .badge-dest{
-  position:absolute;top:12px;left:12px;
+  position:absolute;top:12px;right:12px;
   background:var(--gold);color:#fff;
   font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
   padding:3px 9px;border-radius:10px;z-index:1;
 }
 
-/* Logo placeholder */
-.emp-logo-area{
-  height:90px;
-  display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);
-  position:relative;
+/* Icono */
+.emp-logo-area{padding:18px 18px 0;}
+.emp-icon{
+  width:38px;height:38px;border-radius:10px;background:#F1F5F9;
+  display:flex;align-items:center;justify-content:center;color:var(--navy);
 }
-.emp-logo-area.lotes{background:linear-gradient(135deg,#065f46 0%,#047857 100%);}
-.emp-logo-area.ambos{background:linear-gradient(135deg,var(--navy) 0%,#0D9488 100%);}
-.emp-logo-text{
-  font-family:'Sora',sans-serif;font-size:22px;font-weight:800;
-  color:rgba(255,255,255,.95);letter-spacing:1px;
-}
-.emp-logo-inicial{
-  width:52px;height:52px;border-radius:12px;
-  background:rgba(255,255,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#fff;
-  margin-right:12px;
-}
+.emp-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 
 /* Cuerpo */
-.emp-body{padding:16px 18px;}
+.emp-body{padding:12px 18px 16px;}
 .emp-nombre{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--texto);margin-bottom:4px;}
 .emp-tipo-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
 .tipo-chip{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;}
@@ -160,25 +144,26 @@ header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;
 
 /* CTA PUBLICAR */
 .cta-pub{
-  background:linear-gradient(135deg,var(--navy) 0%,#2D5A8E 100%);
-  text-align:center;padding:48px 24px;color:#fff;margin-top:20px;
+  max-width:1100px;margin:32px auto 0;
+  border:1px solid var(--borde);border-radius:16px;
+  text-align:center;padding:36px 24px;
 }
-.cta-pub h2{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:10px;}
-.cta-pub p{font-size:14px;color:rgba(255,255,255,.7);max-width:480px;margin:0 auto 24px;}
+.cta-pub h2{font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.cta-pub p{font-size:13px;color:var(--muted);max-width:480px;margin:0 auto 20px;}
 .cta-pub-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
 .btn-cta-prim{
-  padding:12px 28px;background:var(--teal);color:#fff;
-  border:none;border-radius:10px;font-family:'Sora',sans-serif;
+  padding:12px 24px;background:var(--navy);color:#fff;
+  border:none;border-radius:9px;font-family:'Sora',sans-serif;
   font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;text-decoration:none;
 }
 .btn-cta-prim:hover{background:var(--teal2);}
 .btn-cta-sec{
-  padding:12px 28px;background:transparent;color:#fff;
-  border:2px solid rgba(255,255,255,.4);border-radius:10px;
+  padding:12px 24px;background:none;color:var(--muted);
+  border:1.5px solid var(--borde);border-radius:9px;
   font-family:'Inter',sans-serif;font-size:14px;font-weight:500;
   cursor:pointer;transition:all .15s;text-decoration:none;
 }
-.btn-cta-sec:hover{border-color:var(--teal);color:var(--teal);}
+.btn-cta-sec:hover{border-color:var(--navy);color:var(--navy);}
 
 /* MODAL */
 .modal-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:9999;align-items:center;justify-content:center;}
@@ -213,13 +198,14 @@ header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;
 @media(max-width:640px){
   /* Header */
   header{padding:10px 14px;}
-  .logo-title{font-size:17px;}
-  .btn-publicar{padding:7px 13px;font-size:12px;}
+  .brand-name{font-size:12px;}
+  .toolnav{display:none;}
 
   /* Hero compacto */
-  .hero{padding:20px 16px 28px;}
-  .hero h1{font-size:1.2rem;}
-  .hero p{font-size:13px;}
+  .hero{padding:16px 16px 4px;}
+  .hero h1{font-size:1.1rem;}
+  .hero p{font-size:12.5px;}
+  .hero-cta{padding:9px 14px;font-size:12px;}
 
   /* Filtros: columna */
   .filtros-bar{
@@ -235,9 +221,8 @@ header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;
   .empresas-grid{grid-template-columns:1fr;gap:14px;}
 
   /* Card: más compacta */
-  .emp-logo-area{height:70px;}
-  .emp-logo-text{font-size:16px;}
-  .emp-body{padding:12px 14px;}
+  .emp-logo-area{padding:14px 14px 0;}
+  .emp-body{padding:10px 14px 14px;}
   .emp-nombre{font-size:15px;}
   .emp-footer{padding:0 14px 12px;}
   .btn-contactar{padding:10px;font-size:13px;}
@@ -256,8 +241,7 @@ header{background:var(--navy);padding:14px 32px;display:flex;align-items:center;
   .modal-pub-box{padding:22px 16px;width:95%;max-height:92vh;}
 }
 @media(max-width:380px){
-  .logo-title{font-size:15px;}
-  .emp-logo-text{font-size:14px;}
+  .brand-name{font-size:11px;}
 }
 </style>
 <script type="application/ld+json">
@@ -271,18 +255,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <header role="banner">
-  <a href="/" aria-label="Inicio CivilIA Labs" style="display:flex;align-items:center;gap:.55rem;text-decoration:none">
-    <img src="/logo.png" alt="CivilIA Labs" style="height:42px;width:auto"/>
-    <div style="display:flex;flex-direction:column;line-height:1.1">
-      <span style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:800;color:#fff;letter-spacing:-.01em">Civil<span style="color:#14B8A6">IA</span> Labs</span>
-      <span style="font-size:.62rem;font-weight:500;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;margin-top:.1rem">Herramientas para tu vivienda</span>
-    </div>
+  <a href="/" aria-label="Inicio CivilIA Labs" class="brand-wrap">
+    <img src="/logo.png" alt="CivilIA Labs"/>
+    <span class="brand-name">Civil<b>IA</b> Labs</span>
   </a>
+  <nav class="toolnav">
+    <a href="/lotecheck/">LoteCheck</a>
+    <a href="/procheck/" class="act">ProCheck</a>
+    <a href="/construcheck/">ConstruCheck</a>
+    <a href="/bonocheck/">BonoCheck</a>
+    <a href="/hipotecacheck/">HipotecaCheck</a>
+    <a href="/viviendacheck/">ViviendaCheck</a>
+  </nav>
 </header>
 
 <div class="hero">
-  <h1>Encuentra tu <span>constructor</span> o vendedor de lotes</h1>
-  <p>Empresas verificadas de construcción e inmobiliarias en la región San Martín, listas para atenderte.</p>
+  <div>
+    <h1>ProCheck</h1>
+    <p>Directorio de constructoras e inmobiliarias verificadas en Tarapoto y San Martín.</p>
+  </div>
+  <button onclick="abrirModalPublicar()" class="hero-cta">Publicar mi empresa</button>
 </div>
 
 <div class="filtros-bar">
@@ -465,13 +457,15 @@ function tipoClass(t){
   return 'tc-constr';
 }
 
+const ICONO_LOTES = '<path d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>';
+const ICONO_CONSTR = '<rect x="4" y="3" width="9" height="18"/><rect x="13" y="9" width="7" height="12"/>';
 function renderCard(e){
+  const icono = e.logoClase==='lotes' ? ICONO_LOTES : ICONO_CONSTR;
   return `
 <div class="emp-card${e.destacada?' destacada':''}" onclick="abrirModal(${e.id})">
   ${e.destacada?'<div class="badge-dest">⭐ Destacada</div>':''}
-  <div class="emp-logo-area ${e.logoClase}">
-    <div class="emp-logo-inicial">${e.inicial}</div>
-    <div class="emp-logo-text">${e.nombre}</div>
+  <div class="emp-logo-area">
+    <div class="emp-icon"><svg viewBox="0 0 24 24">${icono}</svg></div>
   </div>
   <div class="emp-body">
     <div class="emp-nombre">${e.nombre}</div>

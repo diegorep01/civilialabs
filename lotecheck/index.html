@@ -38,16 +38,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 --verde:#22C55E;--ambar:#F59E0B;--rojo:#EF4444;--gold:#D97706;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-height:100vh;}
-header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;
-  justify-content:space-between;position:sticky;top:0;z-index:2000;}
-.logo-brand{font-family:'Sora',sans-serif;font-size:10px;color:var(--teal);
-  text-transform:uppercase;letter-spacing:2px;opacity:.7;}
-.logo-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#fff;}
-.logo-title span{color:var(--teal);}
-.logo-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
-.hstats{display:flex;gap:20px;}
-.hs .n{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--teal);line-height:1;}
-.hs .l{font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+header{background:#fff;padding:12px 20px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:2000;border-bottom:1px solid var(--borde);flex-wrap:wrap;gap:10px;}
+.brand-wrap{display:flex;align-items:center;gap:9px;}
+.brand-wrap img{height:26px;width:auto;}
+.brand-name{font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:var(--navy);}
+.brand-name b{color:var(--teal);}
+.crumb{font-size:13px;color:#94A3B8;}
+.toolnav{display:flex;gap:7px;flex-wrap:wrap;}
+.toolnav a{font-size:12px;font-weight:600;color:var(--muted);padding:6px 12px;border-radius:20px;background:#F4F6F8;text-decoration:none;white-space:nowrap;}
+.toolnav a.act{background:var(--navy);color:#fff;}
+.hstats{display:flex;gap:16px;}
+.hs .n{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--teal2);line-height:1;}
+.hs .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
 .tabs{background:#fff;border-bottom:2px solid var(--borde);display:flex;padding:0 24px;}
 .tab-btn{padding:14px 28px;font-size:15px;font-weight:600;color:var(--muted);
   border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;
@@ -278,7 +281,8 @@ table.comp tr:last-child td{border-bottom:none;}
 }
 @media(max-width:400px){
   header{padding:10px 12px;}
-  .logo-title{font-size:16px;}
+  .brand-name{font-size:12px;}
+  .toolnav{display:none;}
   .btn-filtros-mob{padding:10px 14px;font-size:12px;bottom:16px;left:12px;}
 }
 </style>
@@ -303,12 +307,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="filtros-overlay" id="filtros-overlay" onclick="cerrarFiltrosMob()"></div>
 
 <header role="banner">
-  <a href="/" aria-label="Inicio CivilIA Labs" style="display:flex;align-items:center;gap:.55rem;text-decoration:none">
-    <img src="/logo.png" alt="CivilIA Labs" style="height:42px;width:auto"/>
-    <div style="display:flex;flex-direction:column;line-height:1.1">
-      <span style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:800;color:#fff;letter-spacing:-.01em">Civil<span style="color:#14B8A6">IA</span> Labs</span>
-      <span style="font-size:.62rem;font-weight:500;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;margin-top:.1rem">Herramientas para tu vivienda</span>
-    </div>
+  <a href="/" aria-label="Inicio CivilIA Labs" class="brand-wrap">
+    <img src="/logo.png" alt="CivilIA Labs"/>
+    <span class="brand-name">Civil<b>IA</b> Labs</span>
   </a>
   <div class="hstats">
     <div class="hs"><div class="n" id="stat-lotes">...</div><div class="l">Lotes</div></div>
@@ -316,6 +317,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="hs"><div class="n" id="stat-precio">...</div><div class="l">Precio mediana</div></div>
     <div class="hs"><div class="n" id="stat-pm2">...</div><div class="l">Mediana /m2</div></div>
   </div>
+  <nav class="toolnav">
+    <a href="/lotecheck/" class="act">LoteCheck</a>
+    <a href="/procheck/">ProCheck</a>
+    <a href="/construcheck/">ConstruCheck</a>
+    <a href="/bonocheck/">BonoCheck</a>
+    <a href="/hipotecacheck/">HipotecaCheck</a>
+    <a href="/viviendacheck/">ViviendaCheck</a>
+  </nav>
 </header>
 
 <div class="tabs">
