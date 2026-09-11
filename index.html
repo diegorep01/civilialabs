@@ -30,6 +30,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="twitter:description" content="Herramientas gratuitas para encontrar lotes en Tarapoto, calcular costos de construcción, simular el Bono MiVivienda y comparar hipotecas en Perú. Sin registro."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 :root{
   --navy:#1E3A5F;--teal:#14B8A6;--teal-dark:#0D9488;
@@ -61,13 +62,15 @@ nav.toolnav a:hover{background:#EAEFF3;color:var(--navy)}
 .app-card{border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(15,23,42,.10);display:block;position:relative;text-decoration:none;color:inherit}
 .app-mapa{position:relative;height:420px;background:#EEF2F5;display:block}
 .app-mapa svg{display:block;width:100%;height:100%}
-.mapa-badge{position:absolute;right:16px;top:16px;background:#fff;border-radius:20px;box-shadow:0 6px 18px rgba(15,23,42,.15);padding:8px 14px;font-size:11px;font-weight:700;color:var(--teal-dark)}
-.mapa-popup{position:absolute;background:#fff;border-radius:12px;box-shadow:0 12px 32px rgba(15,23,42,.22);padding:14px 16px;width:210px}
-.mapa-popup .t{font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:var(--navy)}
-.mapa-popup .s{font-size:12px;color:var(--muted);margin-top:2px}
-.mapa-popup .p{font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:var(--teal-dark);margin-top:8px}
-.mapa-popup .b{margin-top:10px;background:var(--teal);color:#fff;font-size:12px;font-weight:700;text-align:center;padding:8px;border-radius:8px}
+.mapa-badge{position:absolute;right:16px;top:16px;z-index:500;background:#fff;border-radius:20px;box-shadow:0 6px 18px rgba(15,23,42,.15);padding:8px 14px;font-size:11px;font-weight:700;color:var(--teal-dark);pointer-events:none}
 .app-caption{text-align:center;font-size:11px;color:var(--muted);margin-top:10px}
+.cl-burbuja{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 13px;border-radius:22px;border:2.5px solid #fff;background:var(--teal);color:#fff;font-family:'Inter',sans-serif;box-shadow:0 3px 14px rgba(0,0,0,.28)}
+.cl-cnt{font-size:13px;font-weight:800;line-height:1}
+.cl-min{font-size:9px;opacity:.85;margin-top:1px;white-space:nowrap}
+.home-popup .leaflet-popup-content-wrapper{border-radius:12px}
+.home-popup .t{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:var(--navy)}
+.home-popup .s{font-size:11px;color:var(--muted);margin-top:2px}
+.home-popup .p{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:var(--teal-dark);margin-top:6px}
 
 /* CTA */
 .cta-wrap{padding:32px 24px 8px;text-align:center}
@@ -163,32 +166,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="app-wrap">
   <a class="app-card" href="./lotecheck/" aria-label="Abrir LoteCheck, el mapa de lotes en Tarapoto">
     <div class="app-mapa">
-      <svg viewBox="0 0 1160 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <rect width="1160" height="420" fill="#EEF2F6"/>
-        <path d="M0 90 H1160 M0 180 H1160 M0 270 H1160 M0 345 H1160" stroke="#DEE5EB" stroke-width="2"/>
-        <path d="M140 0 V420 M340 0 V420 M540 0 V420 M740 0 V420 M940 0 V420" stroke="#DEE5EB" stroke-width="2"/>
-        <path d="M0 150 C260 70, 500 240, 780 130 S1160 160 1160 160" stroke="#CBD6DE" stroke-width="14" fill="none"/>
-        <rect x="60" y="30" width="66" height="50" fill="#DFE7ED"/>
-        <rect x="420" y="230" width="86" height="60" fill="#DFE7ED"/>
-        <rect x="700" y="70" width="58" height="46" fill="#DFE7ED"/>
-        <rect x="880" y="290" width="76" height="55" fill="#DFE7ED"/>
-        <circle cx="230" cy="115" r="8" fill="#14B8A6"/>
-        <circle cx="470" cy="175" r="11" fill="#0D9488" stroke="#fff" stroke-width="3.5"/>
-        <circle cx="640" cy="100" r="8" fill="#14B8A6"/>
-        <circle cx="810" cy="250" r="8" fill="#14B8A6"/>
-        <circle cx="950" cy="150" r="8" fill="#14B8A6"/>
-        <circle cx="350" cy="310" r="8" fill="#14B8A6"/>
-      </svg>
-      <div class="mapa-badge">● Datos actualizados</div>
-      <div class="mapa-popup" style="left:38%;top:42%;">
-        <div class="t">Villa Paraíso</div>
-        <div class="s">300 m² · Mantaro Inmobiliaria</div>
-        <div class="p">desde S/ 38,000</div>
-        <div class="b">Ver detalle</div>
-      </div>
+      <div id="home-mapa" style="width:100%;height:100%"></div>
+      <div class="mapa-badge">● Datos reales de LoteCheck</div>
     </div>
   </a>
-  <p class="app-caption">Vista ilustrativa — abre LoteCheck para ver el mapa real con 1,669 lotes.</p>
+  <p class="app-caption">Mapa real de LoteCheck — abre la herramienta para explorar los 1,669 lotes.</p>
 </div>
 
 <div class="cta-wrap">
@@ -310,5 +292,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <button onclick="localStorage.setItem('cl_ok','1');document.getElementById('cl-cookie').remove()" style="background:#14B8A6;color:#0F172A;border:none;padding:.45rem 1.1rem;border-radius:20px;font-weight:700;cursor:pointer;font-size:.78rem;white-space:nowrap;font-family:inherit" aria-label="Aceptar el uso de cookies">Aceptar</button>
 </div>
 <script>if(localStorage.getItem('cl_ok'))document.getElementById('cl-cookie').remove();</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* Muestra real: 13 clusters por lotización (coordenadas, cantidad de lotes y precio
+   mínimo real), extraídos de la base de datos de LoteCheck. Es una vista decorativa
+   y no interactiva — el mapa real y en vivo está en /lotecheck/. */
+const HOME_PUNTOS=[{"lat":-6.5079,"lon":-76.40753,"n":370,"minP":20000,"nombre":"Residencial la Florencia"},{"lat":-6.47304,"lon":-76.41859,"n":192,"minP":36000,"nombre":"Urbanización La Molina"},{"lat":-6.54376,"lon":-76.34253,"n":168,"minP":43407,"nombre":"Residencial las Palmeras"},{"lat":-6.49932,"lon":-76.43157,"n":156,"minP":6664,"nombre":"Urbanización los Cedros de Tarapoto"},{"lat":-6.46494,"lon":-76.47485,"n":152,"minP":7564,"nombre":"Residencial Village Park"},{"lat":-6.47177,"lon":-76.39195,"n":138,"minP":70000,"nombre":"Las Terrazas de Morales"},{"lat":-6.54509,"lon":-76.36938,"n":136,"minP":8800,"nombre":"Lotización (5 etapas)"},{"lat":-6.49302,"lon":-76.39291,"n":116,"minP":70000,"nombre":"Residencial Santa Clara"},{"lat":-6.54016,"lon":-76.42324,"n":80,"minP":9000,"nombre":"Naranjal de Mayopampa"},{"lat":-6.51728,"lon":-76.41479,"n":75,"minP":12519,"nombre":"Residencial Vista Hermosa"},{"lat":-6.46862,"lon":-76.46769,"n":47,"minP":26000,"nombre":"Residencial Rumikingdom"},{"lat":-6.47848,"lon":-76.49312,"n":21,"minP":31000,"nombre":"Las Casuarinas"},{"lat":-6.50255,"lon":-76.36187,"n":16,"minP":84000,"nombre":"Condominios el Parque"}];
+function fmtK(n){return n>=1000?'S/ '+Math.round(n/1000)+'K':'S/ '+n;}
+(function(){
+  const el=document.getElementById('home-mapa');
+  if(!el||typeof L==='undefined') return;
+  const mapa=L.map(el,{
+    zoomControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,
+    boxZoom:false,keyboard:false,touchZoom:false,tap:false
+  });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap',maxZoom:19
+  }).addTo(mapa);
+  const bounds=L.latLngBounds(HOME_PUNTOS.map(p=>[p.lat,p.lon]));
+  mapa.fitBounds(bounds,{padding:[36,36]});
+  let popupPrincipal=null;
+  HOME_PUNTOS.forEach(p=>{
+    const w=Math.max(58,String(p.n).length*8+56);
+    const icon=L.divIcon({
+      html:`<div class="cl-burbuja"><div class="cl-cnt">${p.n} lotes</div><div class="cl-min">desde ${fmtK(p.minP)}</div></div>`,
+      className:'',iconSize:L.point(w,38),iconAnchor:[w/2,19]
+    });
+    const marker=L.marker([p.lat,p.lon],{icon,interactive:false}).addTo(mapa);
+    const html=`<div class="t">${p.nombre}</div><div class="s">${p.n} lotes disponibles</div><div class="p">desde ${fmtK(p.minP)}</div>`;
+    marker.bindPopup(html,{closeButton:false,autoClose:false,closeOnClick:false,className:'home-popup'});
+    if(p.n>=300) popupPrincipal=marker;
+  });
+  if(popupPrincipal) setTimeout(()=>popupPrincipal.openPopup(),300);
+})();
+</script>
 </body>
 </html>
