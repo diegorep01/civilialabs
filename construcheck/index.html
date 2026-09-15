@@ -43,14 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 }
 html,body{height:100%;overflow:hidden;font-family:var(--font-sans)}
 body{background:var(--bg);color:var(--dark);display:flex;flex-direction:column}
-header{flex-shrink:0;background:var(--navy);color:#fff;padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh-lg);gap:16px}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
-.brand-logo{height:36px;width:auto;filter:brightness(0) invert(1)}
-.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-.header-title{font-family:var(--font-head);font-size:.88rem;font-weight:600;color:#fff;white-space:nowrap}
-.header-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);color:#5EEAD4;padding:2px 10px;border-radius:20px;font-size:.62rem;font-weight:600;letter-spacing:.05em}
-.dot{width:6px;height:6px;background:#5EEAD4;border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+header{flex-shrink:0}
 .layout{display:grid;grid-template-columns:var(--lw) 1fr;flex:1;overflow:hidden}
 .left{display:flex;flex-direction:column;background:var(--white);border-right:1px solid var(--border);overflow:hidden}
 .left-hdr{flex-shrink:0;padding:10px 16px;border-bottom:2px solid var(--teal-pale);display:flex;align-items:center;gap:8px;background:#FAFCFB}
@@ -139,8 +132,6 @@ table.bt tr.empty td{color:#c8d4cf}
   .right{height:auto;min-height:50vh;padding:14px;}
   /* Foto más pequeña en móvil */
   .photo-wrap{flex:0 0 36%;}
-  /* Ocultar elementos de escritorio */
-  .header-right{display:none;}
   /* Categorías: scroll horizontal en móvil */
   .cats{max-height:48vh;overflow-y:auto;}
   /* Inputs más grandes para touch */
@@ -170,7 +161,6 @@ table.bt tr.empty td{color:#c8d4cf}
   .cl-overlay{padding:12px;}
 }
 @media(max-width:400px){
-  .logo-title,.header-title{font-size:16px!important;}
   .left{padding:10px;}
   .right{padding:10px;}
   .res-precio{font-size:24px;}
@@ -372,7 +362,7 @@ const CATS=[
 ];
 const S={m2:120,floors:1,sel:{},region:'costa'};
 let hoverTimer=null;
-function setRegion(r){S.region=r;document.querySelectorAll('.rb').forEach(b=>b.classList.toggle('sel',b.dataset.r===r));const cfg=REGION_CFG[r];document.getElementById('headerRegionBadge').textContent=cfg.badge;document.getElementById('legalText').textContent=cfg.legal;calcBudget();for(let i=CATS.length-1;i>=0;i--){const sel=S.sel[CATS[i].id];if(sel){showPhoto(CATS[i].id,sel);break;}}}
+function setRegion(r){S.region=r;document.querySelectorAll('.rb').forEach(b=>b.classList.toggle('sel',b.dataset.r===r));const cfg=REGION_CFG[r];document.getElementById('legalText').textContent=cfg.legal;calcBudget();for(let i=CATS.length-1;i>=0;i--){const sel=S.sel[CATS[i].id];if(sel){showPhoto(CATS[i].id,sel);break;}}}
 function imprimirPresupuesto(){const now=new Date();const fecha=now.toLocaleDateString('es-PE',{day:'2-digit',month:'long',year:'numeric'});const area=S.m2||0;const pisos=S.floors||1;const reg=REGION_CFG[S.region].label;document.getElementById('printDate').innerHTML='<strong>Fecha:</strong> '+fecha+'<br>Área: '+area+' m² · '+pisos+' piso'+(pisos>1?'s':'')+' · Región: '+reg;window.print();}
 function showPhoto(catId,optC){const cat=CATS.find(c=>c.id===catId);const opt=cat&&cat.opts.find(o=>o.c===optC);if(!opt)return;const img=document.getElementById('mainImg');const ov=document.getElementById('photoOv');const ph=document.getElementById('photoEmpty');ph.style.display='none';ov.style.display='block';if(img.dataset.src!==opt.img){img.style.opacity='0';setTimeout(()=>{img.src=opt.img;img.dataset.src=opt.img;img.style.opacity='1';},160);}document.getElementById('ovTag').textContent='Categoría '+opt.c+'  ·  '+cat.title;document.getElementById('ovTitle').textContent=opt.t;document.getElementById('ovDesc').textContent=opt.d;document.getElementById('ovPrice').textContent='S/. '+opt.p[S.region].toFixed(2)+' / m²';}
 function restorePhoto(){for(let i=CATS.length-1;i>=0;i--){const sel=S.sel[CATS[i].id];if(sel){showPhoto(CATS[i].id,sel);return;}}document.getElementById('mainImg').style.opacity='0';document.getElementById('photoOv').style.display='none';document.getElementById('photoEmpty').style.display='flex';}

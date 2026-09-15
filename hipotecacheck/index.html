@@ -54,13 +54,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 html { scroll-behavior: smooth; }
 body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
 
-/* HEADER */
-header { background: var(--navy); padding: 20px 32px; display: flex; align-items: center; gap: 18px; }
-.header-logo { width: 50px; height: 50px; object-fit: contain; filter: brightness(0) invert(1); flex-shrink: 0; }
-.header-text h1 { font-family: 'Sora', sans-serif; font-size: 1.65rem; font-weight: 800; color: #fff; line-height: 1.1; }
-.header-text p  { color: var(--teal); font-size: .88rem; font-weight: 500; margin-top: 3px; }
-.header-badge { margin-left: auto; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 20px; padding: 4px 14px; color: rgba(255,255,255,.8); font-size: .76rem; font-weight: 600; letter-spacing: .04em; white-space: nowrap; }
-
 /* CONTENEDOR */
 .container { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
 
@@ -144,25 +137,20 @@ tr.mejor-fila td:first-child::after { content: ' 🏆'; }
 .btn-print:hover { background: var(--navy-dark); }
 
 /* FOOTER */
-footer { background: var(--navy); padding: 18px 32px; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 48px; }
-.footer-logo { height: 26px; object-fit: contain; filter: brightness(0) invert(1); }
-footer p { color: rgba(255,255,255,.45); font-size: .72rem; text-align: center; }
+footer { border-top: 1px solid var(--border); padding: 28px 20px; text-align: center; margin-top: 48px; }
+.footer-logo { height: 20px; opacity: .6; margin-bottom: 8px; }
+footer p { color: var(--muted); font-size: .72rem; text-align: center; }
 
 /* RESPONSIVE */
 @media (max-width: 640px) {
   header { padding: 10px 14px; gap: 10px; }
-  .header-badge { display: none; }
   .form-grid, .summary-grid, .comp-grid { grid-template-columns: 1fr; }
-  .header-text h1 { font-size: 1.2rem; }
   input, select { min-height: 42px; font-size: 16px !important; }
   button, .btn-calc, .btn-primary { min-height: 44px; font-size: 15px; }
   .modal-box, .cl-overlay > div { padding: 18px 14px; width: 96%; max-height: 90vh; overflow-y: auto; border-radius: 14px; }
   .table-wrap, .comp-wrap { overflow-x: auto; }
   table { min-width: 460px; }
   .result-precio, .res-precio { font-size: 26px !important; }
-}
-@media (max-width: 400px) {
-  .header-text h1 { font-size: 1.05rem; }
 }
 
 /* PRINT */
@@ -218,8 +206,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- TOGGLE MONEDA -->
   <div class="moneda-toggle">
-    <button class="moneda-btn active" id="btn-soles"   onclick="setMoneda('soles')">🇵🇪 Soles (S/)</button>
-    <button class="moneda-btn"        id="btn-dolares" onclick="setMoneda('dolares')">🇺🇸 Dólares ($)</button>
+    <button class="moneda-btn active" id="btn-soles"   onclick="setMoneda('soles')">Soles (S/)</button>
+    <button class="moneda-btn"        id="btn-dolares" onclick="setMoneda('dolares')">Dólares ($)</button>
   </div>
 
   <!-- INPUTS -->
@@ -261,7 +249,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 
-  <button class="btn-calcular" onclick="calcular()">🏦 Comparar bancos</button>
+  <button class="btn-calcular" onclick="calcular()">Comparar bancos →</button>
 </div>
 </div>
 
@@ -271,12 +259,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- TARJETAS RESUMEN -->
   <div class="summary-grid">
     <div class="summary-card ganador">
-      <div class="summary-label">🏆 Banco más conveniente</div>
+      <div class="summary-label">Banco más conveniente</div>
       <div class="summary-banco" id="res-banco">—</div>
       <div class="summary-cuota" id="res-cuota">—</div>
     </div>
     <div class="summary-card ahorro">
-      <div class="summary-label">💰 Ahorro potencial</div>
+      <div class="summary-label">Ahorro potencial</div>
       <div class="summary-ahorro-valor" id="res-ahorro">—</div>
       <div class="summary-ahorro-desc" id="res-ahorro-desc">—</div>
     </div>
@@ -314,14 +302,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 
-  <button class="btn-print" onclick="clAbrir()">📧 Recibir mi resultado por email</button>
+  <button class="btn-print" onclick="clAbrir()">Recibir mi resultado por email</button>
 
 </div>
 </div>
 
 <!-- FOOTER -->
 <footer>
-  <img src="/logo.png" alt="CivilIA Labs" class="footer-logo">
+  <img src="/logo.png" alt="" class="footer-logo">
   <p>Calculadora orientativa · Tasas referenciales SBS Perú · Consulta con tu banco las condiciones exactas</p>
 </footer>
 
