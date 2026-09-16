@@ -626,8 +626,17 @@ function renderCards(){
 }
 function iniciarMapa(){
   if(!mapaIniciado){
-    mapa=L.map('mapa').setView([-6.49,-76.37],12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19}).addTo(mapa);
+    try{
+      mapa=L.map('mapa').setView([-6.49,-76.37],12);
+    }catch(e){
+      console.error('Leaflet no disponible:',e);
+      mostrarFallbackMapa();
+      return;
+    }
+    const tileLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19}).addTo(mapa);
+    let tileCargado=false;
+    tileLayer.once('tileload',()=>{tileCargado=true;});
+    setTimeout(()=>{if(!tileCargado) mostrarFallbackMapa();},10000);
     cluster=L.markerClusterGroup({
       maxClusterRadius:45,
       spiderfyOnMaxZoom:false,
@@ -741,6 +750,16 @@ function iniciarMapa(){
     mapaIniciado=true;
   }
   actualizarMapa();
+}
+function mostrarFallbackMapa(){
+  if(vistaActiva!=='mapa') return;
+  setVista('lista');
+  if(!document.getElementById('aviso-mapa')){
+    document.getElementById('cards-grid').insertAdjacentHTML('beforebegin',
+      '<div id="aviso-mapa" style="background:#FEF3C7;border:1px solid #FDE68A;color:#92400E;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;">'+
+      '⚠ No se pudo cargar el mapa (puede ser tu conexión). Mostrando la lista de terrenos. '+
+      '<a href="#" onclick="event.preventDefault();document.getElementById(\'aviso-mapa\').remove();mapaIniciado=false;setVista(\'mapa\');" style="color:#92400E;font-weight:700;text-decoration:underline;">Reintentar mapa</a></div>');
+  }
 }
 function colorPrecio(p){
   if(p<=15000) return'#16a34a';
