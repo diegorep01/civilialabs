@@ -142,6 +142,27 @@ header{background:#fff;padding:14px 24px;display:flex;align-items:center;justify
 .empty-ico{font-size:40px;margin-bottom:14px;}
 .empty-ttl{font-size:17px;font-weight:600;color:var(--texto);margin-bottom:6px;}
 
+/* CTA DESTACADO */
+.cta-dest{
+  max-width:1100px;margin:32px auto 0;
+  border:1.5px solid var(--gold-borde);background:var(--gold-bg);border-radius:16px;
+  padding:32px 24px;
+}
+.cta-dest-inner{max-width:640px;margin:0 auto;text-align:center;}
+.cta-dest h2{font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.cta-dest-precio{font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:800;color:var(--gold);margin:10px 0 4px;}
+.cta-dest-precio span{font-size:.85rem;font-weight:600;color:var(--muted);}
+.cta-dest p{font-size:13px;color:var(--muted);margin-bottom:14px;}
+.cta-dest-benef{list-style:none;text-align:left;max-width:420px;margin:0 auto 20px;font-size:13px;color:var(--texto);}
+.cta-dest-benef li{padding:4px 0 4px 22px;position:relative;}
+.cta-dest-benef li::before{content:'✓';position:absolute;left:0;color:var(--gold);font-weight:700;}
+.btn-cta-gold{
+  padding:12px 24px;background:var(--gold);color:#fff;
+  border:none;border-radius:9px;font-family:'Sora',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;
+}
+.btn-cta-gold:hover{background:#B45309;}
+
 /* CTA PUBLICAR */
 .cta-pub{
   max-width:1100px;margin:32px auto 0;
@@ -300,6 +321,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="empresas-grid" id="grid"></div>
 </div>
 
+<div class="cta-dest">
+  <div class="cta-dest-inner">
+    <h2>Aparece primero — Destacado ProCheck</h2>
+    <p>Tu empresa en la posición #1, con badge dorado, foto principal y WhatsApp directo. Más visibilidad, más contactos.</p>
+    <div class="cta-dest-precio">S/ 200<span> / mes</span></div>
+    <ul class="cta-dest-benef">
+      <li>Posición #1 en los resultados, siempre visible</li>
+      <li>Badge "⭐ Destacada" dorado en tu ficha</li>
+      <li>Contacto directo por WhatsApp desde tu tarjeta</li>
+    </ul>
+    <button onclick="abrirModalDestacado()" class="btn-cta-gold">Hazte Destacado →</button>
+  </div>
+</div>
+
 <div class="cta-pub">
   <h2>¿Tu empresa no está aquí?</h2>
   <p>Publica tu perfil y llega a clientes que ya están buscando construir o comprar su lote en Tarapoto.</p>
@@ -340,6 +375,45 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="modal-pub-ok-ttl">¡Solicitud recibida!</div>
       <div class="modal-pub-ok-sub">Te escribimos al WhatsApp en menos de 24 horas para coordinar los detalles de tu perfil.</div>
       <button class="modal-pub-send" style="max-width:200px;margin:0 auto;display:block;" onclick="cerrarModalPublicar()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DESTACADO (pago) -->
+<div class="modal-pub-ov" id="modal-dest-ov">
+  <div class="modal-pub-box">
+    <div id="modal-dest-form-state">
+      <div class="modal-pub-ttl">Hazte Destacado — S/ 200/mes</div>
+      <div class="modal-pub-sub">Paga por Yape o Plin y avísanos. Activamos tu destacado en menos de 24 horas.</div>
+
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.7;color:#0F172A">
+        <strong>Yape / Plin:</strong> 954 354 978
+      </div>
+
+      <label class="modal-pub-label">Nombre de contacto *</label>
+      <input class="modal-pub-input" id="dest-nombre" type="text" placeholder="Ej: Carlos Ramírez"/>
+      <label class="modal-pub-label">Empresa (la que ya está en ProCheck) *</label>
+      <input class="modal-pub-input" id="dest-empresa" type="text" placeholder="Ej: CDJ Construcción y Servicios"/>
+      <label class="modal-pub-label">WhatsApp *</label>
+      <input class="modal-pub-input" id="dest-tel" type="tel" placeholder="Ej: 944 123 456"/>
+      <label class="modal-pub-label">Medio de pago</label>
+      <select class="modal-pub-input" id="dest-medio">
+        <option value="Yape">Yape</option>
+        <option value="Plin">Plin</option>
+      </select>
+      <label class="modal-pub-label">Referencia de la operación (opcional)</label>
+      <input class="modal-pub-input" id="dest-ref" type="text" placeholder="Últimos dígitos, hora, monto..."/>
+      <input id="dest-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;pointer-events:none">
+      <div class="modal-pub-btns">
+        <button class="modal-pub-cancel" onclick="cerrarModalDestacado()">Cancelar</button>
+        <button class="modal-pub-send" id="dest-btn-send" onclick="enviarDestacado()">Ya pagué, notificar →</button>
+      </div>
+    </div>
+    <div id="modal-dest-ok-state" style="display:none" class="modal-pub-ok">
+      <div class="modal-pub-ok-ico">✅</div>
+      <div class="modal-pub-ok-ttl">¡Gracias! Verificando tu pago</div>
+      <div class="modal-pub-ok-sub">Revisamos tu pago y activamos el destacado en menos de 24 horas. Te confirmamos por WhatsApp.</div>
+      <button class="modal-pub-send" style="max-width:200px;margin:0 auto;display:block;" onclick="cerrarModalDestacado()">Cerrar</button>
     </div>
   </div>
 </div>
@@ -544,6 +618,47 @@ function cerrarModalPublicar(){
 document.getElementById('modal-pub-ov').addEventListener('click',e=>{
   if(e.target.id==='modal-pub-ov') cerrarModalPublicar();
 });
+
+// ── MODAL DESTACADO (pago) ──────────────────────────────────
+function abrirModalDestacado(){
+  document.getElementById('modal-dest-form-state').style.display='';
+  document.getElementById('modal-dest-ok-state').style.display='none';
+  const btn=document.getElementById('dest-btn-send');
+  btn.disabled=false; btn.textContent='Ya pagué, notificar →';
+  ['dest-nombre','dest-empresa','dest-tel','dest-ref'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modal-dest-ov').classList.add('v');
+  dataLayer.push({event:'modal_abierto',herramienta:'ProCheck',tipo:'destacado'});
+}
+function cerrarModalDestacado(){
+  document.getElementById('modal-dest-ov').classList.remove('v');
+}
+document.getElementById('modal-dest-ov').addEventListener('click',e=>{
+  if(e.target.id==='modal-dest-ov') cerrarModalDestacado();
+});
+
+function enviarDestacado(){
+  if(document.getElementById('dest-hp').value){const btn=document.getElementById('dest-btn-send');btn.disabled=true;btn.textContent='Enviando...';setTimeout(()=>{document.getElementById('modal-dest-form-state').style.display='none';document.getElementById('modal-dest-ok-state').style.display='';},800);return;}
+  const nombre  = document.getElementById('dest-nombre').value.trim();
+  const empresa = document.getElementById('dest-empresa').value.trim();
+  const tel     = document.getElementById('dest-tel').value.trim();
+  if(!nombre||!empresa||!tel){alert('Por favor completa nombre, empresa y WhatsApp.');return;}
+  const btn=document.getElementById('dest-btn-send');
+  btn.disabled=true; btn.textContent='Enviando...';
+  fetch(AS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
+    herramienta:'ProCheck-Destacado',
+    nombre,
+    empresa,
+    tel,
+    medioPago: document.getElementById('dest-medio').value,
+    referencia: document.getElementById('dest-ref').value.trim()
+  })})
+    .catch(()=>{})
+    .finally(()=>{
+      dataLayer.push({event:'lead_enviado',herramienta:'ProCheck-Destacado',ciudad:'—'});
+      document.getElementById('modal-dest-form-state').style.display='none';
+      document.getElementById('modal-dest-ok-state').style.display='';
+    });
+}
 
 function enviarPublicar(){
   if(document.getElementById('pub-hp').value){const btn=document.getElementById('pub-btn-send');btn.disabled=true;btn.textContent='Enviando...';setTimeout(()=>{document.getElementById('modal-pub-form-state').style.display='none';document.getElementById('modal-pub-ok-state').style.display='';},800);return;}
