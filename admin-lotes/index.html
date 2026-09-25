@@ -67,6 +67,15 @@ header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;
 .foto-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;cursor:pointer;}
 .foto-lightbox.v{display:flex;}
 .foto-lightbox img{max-width:90vw;max-height:88vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.meta-dest{background:#FFFBEB!important;color:#92400E!important;border:1px solid #FDE68A;}
+.ck-dest-confirm{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 12px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;font-size:13px;color:#78350F;cursor:pointer;user-select:none;}
+.ck-dest-confirm input{width:16px;height:16px;accent-color:#D97706;cursor:pointer;flex-shrink:0;}
+.dest-status{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:8px;font-size:13px;}
+.dest-status.on{background:#FFFBEB;border:1px solid #FDE68A;color:#78350F;}
+.dest-status.off{background:var(--bg);border:1px solid var(--borde);color:var(--muted);}
+.btn-dest-toggle{padding:6px 14px;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;}
+.btn-dest-on{background:#D97706;color:#fff;}
+.btn-dest-off{background:var(--muted);color:#fff;}
 </style>
 </head>
 <body>
@@ -200,6 +209,7 @@ function renderLotes(snap){
     return;
   }
   var html='';
+  var idsAprobados=[];
   snap.forEach(function(doc){
     var d=doc.data();
     var id=doc.id;
@@ -230,6 +240,9 @@ function renderLotes(snap){
     if(d.agua)sv.push('💧 Agua');if(d.luz)sv.push('⚡ Luz');
     if(d.desague)sv.push('🚿 Desagüe');if(d.titulo)sv.push('📄 Título');
     if(sv.length) html+='<div class="meta-item">'+sv.join(' ')+'</div>';
+    if(d.quiere_destacado){
+      html+='<div class="meta-item meta-dest">⭐ Pidió Destacado (S/29/30 días) · '+esc(d.medio_pago_dest||'—')+(d.ref_pago_dest?' · Ref: '+esc(d.ref_pago_dest):' · sin referencia')+'</div>';
+    }
     html+='</div>';
     if(d.desc) html+='<div class="lc-desc">'+esc(d.desc)+'</div>';
     html+='<div class="lc-contacto"><b>Contacto:</b> '+esc(d.nombre_vendedor||'—')+' · 📞 '+esc(d.tel||'—')+(d.email?' · ✉ '+esc(d.email):'')+'</div>';
@@ -238,9 +251,43 @@ function renderLotes(snap){
       d.fotos.forEach(function(url){html+='<img class="foto-thumb" src="'+esc(url)+'" onclick="verFoto(\''+esc(url)+'\')" title="Ver foto a tamaño completo"/>';});
       html+='</div>';
     }
+    if(d.estado==='pendiente'&&d.quiere_destacado){
+      html+='<label class="ck-dest-confirm"><input type="checkbox" id="ck-dest-'+id+'"/> ✅ Confirmo que el pago del Destacado (Yape/Plin) llegó correctamente — al aprobar, este lote sale con badge ⭐ Destacado</label>';
+    }
+    if(d.estado==='aprobado'){
+      html+='<div id="dest-area-'+id+'" class="dest-status off">Cargando estado de destacado…</div>';
+      idsAprobados.push(id);
+    }
     html+='</div>';
   });
   el.innerHTML=html;
+  idsAprobados.forEach(cargarEstadoDestacado);
+}
+
+/* ── Destacado en lotes ya aprobados ─────────────────────────────────── */
+function destAreaHtml(pubId,loteId,activo){
+  if(!loteId){
+    return '<div id="dest-area-'+pubId+'" class="dest-status off">⚠ No se encontró el lote vinculado en la colección "lotes".</div>';
+  }
+  if(activo){
+    return '<div id="dest-area-'+pubId+'" class="dest-status on">⭐ Destacado activo <button class="btn-dest-toggle btn-dest-off" onclick="toggleDestacadoLote(\''+loteId+'\',false,\''+pubId+'\')">Quitar</button></div>';
+  }
+  return '<div id="dest-area-'+pubId+'" class="dest-status off">☆ Sin destacar <button class="btn-dest-toggle btn-dest-on" onclick="toggleDestacadoLote(\''+loteId+'\',true,\''+pubId+'\')">⭐ Destacar</button></div>';
+}
+function cargarEstadoDestacado(pubId){
+  db.collection('lotes').where('id_publicacion','==',pubId).limit(1).get().then(function(s){
+    var area=document.getElementById('dest-area-'+pubId);
+    if(!area) return;
+    if(s.empty){area.outerHTML=destAreaHtml(pubId,null,false);return;}
+    var loteDoc=s.docs[0];
+    area.outerHTML=destAreaHtml(pubId,loteDoc.id,!!loteDoc.data().dest);
+  }).catch(function(){});
+}
+function toggleDestacadoLote(loteId,nuevo,pubId){
+  db.collection('lotes').doc(loteId).update({dest:nuevo}).then(function(){
+    var area=document.getElementById('dest-area-'+pubId);
+    if(area) area.outerHTML=destAreaHtml(pubId,loteId,nuevo);
+  }).catch(function(e){alert('Error: '+e.message);});
 }
 
 function aprobar(id){
@@ -248,16 +295,21 @@ function aprobar(id){
   var ba=document.getElementById('btn-ap-'+id);
   var br=document.getElementById('btn-re-'+id);
   if(ba)ba.disabled=true; if(br)br.disabled=true;
+  var ckDest=document.getElementById('ck-dest-'+id);
+  var marcarDest=!!(ckDest&&ckDest.checked);
 
   db.collection('publicaciones').doc(id).get().then(function(doc){
     var d=doc.data();
     // 1. Copiar a colección 'lotes' (los que lotecheck.html lee desde Firebase)
+    //    lat/lon son obligatorios: sin ellos el lote no aparece nunca en el mapa/lista de LoteCheck.
     return db.collection('lotes').add({
       lotiz:d.lotiz,nombre_lote:d.nombre_lote,area:d.area,precio:d.precio,pm2:d.pm2,
       agua:!!d.agua,luz:!!d.luz,desague:!!d.desague,titulo:!!d.titulo,
-      desc:d.desc||'',distrito:d.distrito||'',
+      desc:d.desc||'',departamento:d.departamento||'',
+      lat:d.lat||null,lon:d.lon||null,
       nombre_vendedor:d.nombre_vendedor,tel:d.tel,
       fotos:d.fotos||[],
+      dest:marcarDest,
       estado:'aprobado',id_publicacion:id,
       fecha_aprobacion:firebase.firestore.FieldValue.serverTimestamp()
     }).then(function(){

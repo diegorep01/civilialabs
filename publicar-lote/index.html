@@ -21,7 +21,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <style>
 :root{--navy:#1E3A5F;--navy2:#243d65;--teal:#14B8A6;--teal2:#0D9488;
 --bg:#F8FAFC;--card:#fff;--borde:#E2E8F0;--texto:#0F172A;--muted:#64748B;
---verde:#22C55E;--rojo:#EF4444;}
+--verde:#22C55E;--rojo:#EF4444;--gold:#D97706;--gold-bg:#FFFBEB;--gold-borde:#FDE68A;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-height:100vh;}
 header{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
@@ -109,6 +109,16 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
   font-size:12px;display:none;align-items:center;justify-content:center;padding:0;line-height:1;}
 /* Honeypot */
 #pub-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;pointer-events:none;}
+/* Destacado */
+.dest-toggle{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1.5px solid var(--gold-borde);
+  background:var(--gold-bg);border-radius:10px;cursor:pointer;user-select:none;}
+.dest-toggle input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
+.dest-toggle .dt-txt{font-size:13px;font-weight:600;color:#78350F;}
+.dest-box{margin-top:12px;background:#fff;border:1.5px solid var(--gold-borde);border-radius:10px;padding:16px;display:none;}
+.dest-box.v{display:block;}
+.dest-precio{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--gold);margin-bottom:10px;}
+.dest-precio span{font-size:12px;font-weight:600;color:var(--muted);}
+.dest-pago{background:var(--bg);border:1px solid var(--borde);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--texto);}
 </style>
 </head>
 <body>
@@ -259,6 +269,31 @@ textarea{min-height:90px;resize:vertical;line-height:1.5;}
       </div>
     </div>
     <p class="hint" style="margin-bottom:0;">Imágenes del terreno, fachada o área. Hasta 5 MB por foto. Se comprimen automáticamente.</p>
+
+    <hr class="divider"/>
+    <div class="section-title">⭐ Destaca tu lote <span style="font-size:11px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(opcional)</span></div>
+    <label class="dest-toggle">
+      <input type="checkbox" id="cb-destacado" onchange="toggleDestacado()"/>
+      <span class="dt-txt">Quiero que mi lote aparezca primero en LoteCheck, con badge dorado ⭐ Destacado</span>
+    </label>
+    <div class="dest-box" id="box-destacado">
+      <div class="dest-precio">S/ 29 <span>/ 30 días</span></div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.5;">Paga por Yape o Plin y déjanos la referencia. Revisamos y activamos el destacado junto con tu publicación, en menos de 48 horas.</p>
+      <div class="dest-pago"><strong>Yape / Plin:</strong> 954 354 978</div>
+      <div class="form-row">
+        <div>
+          <label>Medio de pago</label>
+          <select id="f-dest-medio">
+            <option value="Yape">Yape</option>
+            <option value="Plin">Plin</option>
+          </select>
+        </div>
+        <div>
+          <label>Referencia de la operación</label>
+          <input id="f-dest-ref" type="text" placeholder="Últimos dígitos, hora, monto..."/>
+        </div>
+      </div>
+    </div>
 
     <hr class="divider"/>
     <div id="barra-wrap">
@@ -425,6 +460,9 @@ function mostrarAlerta(msg,tipo){
   el.scrollIntoView({behavior:'smooth',block:'center'});
 }
 function ocultarAlerta(){document.getElementById('alerta-form').style.display='none';}
+function toggleDestacado(){
+  document.getElementById('box-destacado').classList.toggle('v',document.getElementById('cb-destacado').checked);
+}
 
 function enviarPublicacion(){
   // Honeypot
@@ -467,6 +505,8 @@ function enviarPublicacion(){
 
   var tempId=Math.random().toString(36).slice(2)+Date.now().toString(36);
 
+  var quiereDest=document.getElementById('cb-destacado').checked;
+
   subirFotos(tempId).then(function(fotoUrls){
     btn.textContent='Guardando publicación...';
     var doc={
@@ -481,13 +521,19 @@ function enviarPublicacion(){
       nombre_vendedor:nombre,tel:tel,
       email:email||null,
       fotos:fotoUrls,
+      quiere_destacado:quiereDest,
+      medio_pago_dest:quiereDest?document.getElementById('f-dest-medio').value:null,
+      ref_pago_dest:quiereDest?document.getElementById('f-dest-ref').value.trim():null,
       estado:'pendiente',
       fecha:firebase.firestore.FieldValue.serverTimestamp()
     };
     return db.collection('publicaciones').add(doc);
   }).then(function(){
     setProgreso(100,'¡Lote publicado!');
-    dataLayer.push({event:'lote_publicado',lotiz:lotiz,area:area,precio:precio});
+    dataLayer.push({event:'lote_publicado',lotiz:lotiz,area:area,precio:precio,destacado:quiereDest});
+    if(quiereDest){
+      document.querySelector('#modal-ok .modal-sub').textContent='Revisaremos tu publicación y tu solicitud de Destacado en menos de 48 horas. Una vez aprobada, tu lote aparecerá en LoteCheck (con badge dorado si el pago del Destacado quedó confirmado) y llegará a los compradores activos de la zona.';
+    }
     setTimeout(function(){document.getElementById('modal-ok').classList.add('v');},400);
   }).catch(function(err){
     document.getElementById('barra-wrap').style.display='none';

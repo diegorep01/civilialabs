@@ -51,12 +51,18 @@ header{background:#fff;padding:12px 20px;display:flex;align-items:center;
 .hstats{display:flex;gap:16px;}
 .hs .n{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--teal2);line-height:1;}
 .hs .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-.tabs{background:#fff;border-bottom:2px solid var(--borde);display:flex;padding:0 24px;}
+.tabs{background:#fff;border-bottom:2px solid var(--borde);display:flex;padding:0 24px;
+  align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.tabs-left{display:flex;}
 .tab-btn{padding:14px 28px;font-size:15px;font-weight:600;color:var(--muted);
   border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;
   margin-bottom:-2px;transition:all .2s;font-family:'Inter',sans-serif;}
 .tab-btn:hover{color:var(--navy);}
 .tab-btn.activo{color:var(--navy);border-bottom-color:var(--teal);}
+.btn-tab-cta{margin:8px 0;padding:9px 18px;background:var(--teal);color:#fff;
+  font-size:13px;font-weight:700;border-radius:20px;text-decoration:none;
+  white-space:nowrap;transition:background .15s;font-family:'Inter',sans-serif;}
+.btn-tab-cta:hover{background:var(--teal2);}
 .contenido{display:flex;height:calc(100vh - 114px);overflow:hidden;}
 aside{width:276px;flex-shrink:0;background:#fff;border-right:1px solid var(--borde);
   display:flex;flex-direction:column;overflow-y:auto;}
@@ -278,12 +284,14 @@ table.comp tr:last-child td{border-bottom:none;}
   /* Tabs */
   .tabs{padding:0 10px;}
   .tab-btn{padding:11px 16px;font-size:13px;}
+  .btn-tab-cta{font-size:12px;padding:7px 12px;}
 }
 @media(max-width:400px){
   header{padding:10px 12px;}
   .brand-name{font-size:12px;}
   .toolnav{display:none;}
   .btn-filtros-mob{padding:10px 14px;font-size:12px;bottom:16px;left:12px;}
+  .cta-gratis{display:none;}
 }
 </style>
 <script type="application/ld+json">
@@ -328,8 +336,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn activo" onclick="switchTab('busco')">🔍 Busco un lote</button>
-  <button class="tab-btn" onclick="switchTab('valoro')">💰 Valoro mi terreno</button>
+  <div class="tabs-left">
+    <button class="tab-btn activo" onclick="switchTab('busco')">🔍 Busco un lote</button>
+    <button class="tab-btn" onclick="switchTab('valoro')">💰 Valoro mi terreno</button>
+  </div>
+  <a href="/publicar-lote/" class="btn-tab-cta" onclick="dataLayer.push({event:'clic_publicar_lote',origen:'lotecheck_tabs'})">📤 Publicar mi lote<span class="cta-gratis"> gratis</span></a>
 </div>
 
 <div class="contenido" id="tab-busco" style="display:flex;">
